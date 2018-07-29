@@ -1,0 +1,39 @@
+buildscript {
+    ext.kotlin_version = '1.2.51'
+    repositories {
+        mavenLocal()
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+        maven { url 'http://maven.aliyun.com/nexus/content/repositories/jcenter' }
+        jcenter()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+apply plugin: 'kotlin'
+apply plugin: 'application'
+
+mainClassName = 'org.shuzu.generator.Generator'
+
+repositories {
+    mavenLocal()
+    maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+    maven { url 'http://maven.aliyun.com/nexus/content/repositories/jcenter' }
+    jcenter()
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    compile 'org.eclipse.jgit:org.eclipse.jgit:5.0.1.201806211838-r'
+    compile 'org.eclipse.mylyn.github:org.eclipse.egit.github.core:2.1.5'
+    compile "org.apache.commons:commons-lang3:3.7"
+    compile "commons-io:commons-io:2.6"
+    compile 'org.rythmengine:rythm-engine:1.2.2'
+    testCompile "junit:junit:4.11"
+    testCompile 'org.assertj:assertj-core:3.9.0'
+    testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
+}
+
+// gradle wrapper --gradle-version 4.8.1
+// ./gradlew -version

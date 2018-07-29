@@ -1,0 +1,16 @@
+@import org.shuzu.generator.*
+@extends("layout")
+@args Repository repo
+
+<div>
+    <div>@repo.name@</div>
+    <div>@repo.description@</div>
+    <div>@repo.readme@</div>
+</div>
+
+@for(CodeFile file: repo.files@) {
+<div>@file.name@</div>
+<div>@file.path@</div>
+<div>@file.content@</div>
+}
+

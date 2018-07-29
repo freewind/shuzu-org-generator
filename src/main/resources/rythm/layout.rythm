@@ -1,0 +1,12 @@
+<html>
+<head>
+    <title>数组网 - Demo驱动学习</title>
+</head>
+<body>
+<div id="header">
+    <span>数组网</span>
+    <span>Demo驱动学习</span>
+</div>
+@doLayout()
+</body>
+</html>
