@@ -25,6 +25,7 @@ repositories {
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    compile 'com.beust:klaxon:3.0.1'
     compile 'org.eclipse.jgit:org.eclipse.jgit:5.0.1.201806211838-r'
     compile 'org.eclipse.mylyn.github:org.eclipse.egit.github.core:2.1.5'
     compile "org.apache.commons:commons-lang3:3.7"

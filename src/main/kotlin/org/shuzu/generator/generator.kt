@@ -1,33 +1,38 @@
 package org.shuzu.generator
 
+import com.beust.klaxon.Klaxon
 import java.io.File
 import org.apache.commons.io.FileUtils
 import org.rythmengine.Rythm
 
-private val userHome = System.getProperty("user.home")
-private val LocalRoot = File(userHome, "tmp/shuzu-org-generator/repos").also {
-    if (!it.exists()) it.mkdirs()
-}
-
-private val SiteRoot = File(userHome, "tmp/sites").also {
-    if (!it.exists()) it.mkdirs()
-}
-
-fun main(args: Array<String>) {
-    Generator.main(args)
-}
-
-object Generator {
+object SyncGithubReposToLocal {
     @JvmStatic
     fun main(args: Array<String>) {
         val orgs = fetchGithub()
+        saveToLocalFile(orgs)
 
         deleteNonExistLocalRepos(orgs)
         cloneOrPullRepos(orgs)
+    }
+}
 
-        val site = readSiteData(orgs)
+object SiteGenerator {
+    @JvmStatic
+    fun main(args: Array<String>) {
+        val site = readSiteData()
         renderSite(site)
     }
+}
+
+private val userHome = System.getProperty("user.home")
+private val LocalRoot = File(userHome, "tmp/shuzu-org-generator").also { FileUtils.forceMkdir(it) }
+private val LocalReposRoot = File(LocalRoot, "repos").also { if (!it.exists()) it.mkdirs() }
+private val SiteRoot = File(LocalRoot, "sites").also { if (!it.exists()) it.mkdirs() }
+private val GithubReposInfoFile = File(LocalRoot, "github-repos.json")
+
+private fun saveToLocalFile(orgs: List<Organization>) {
+    val json = Klaxon().toJsonString(orgs)
+    GithubReposInfoFile.writeText(json)
 }
 
 private fun renderSite(site: Site) {
@@ -48,7 +53,9 @@ private fun renderSite(site: Site) {
     }
 }
 
-private fun readSiteData(orgs: List<Organization>): Site {
+private fun readSiteData(): Site {
+    val json = GithubReposInfoFile.readText()
+    val orgs = Klaxon().parseArray<Organization>(json)!!
     return Site(orgs.map { org ->
         org.copy(repos = org.repos.map { repo ->
             repo.copy(codeFiles = readCodeFiles(org, repo))
@@ -57,7 +64,7 @@ private fun readSiteData(orgs: List<Organization>): Site {
 }
 
 private fun readCodeFiles(org: Organization, repo: Repository): List<CodeFile> {
-    val dir = File(LocalRoot, "${org.name}/${repo.name}")
+    val dir = File(LocalReposRoot, "${org.name}/${repo.name}")
     dir.walkTopDown().filter { file ->
         file.isFile && hasExpectedExtension(file) && !inExcludedDirs(file)
     }.map { file ->
@@ -80,7 +87,7 @@ fun hasExpectedExtension(file: File): Boolean {
 
 private fun cloneOrPullRepos(orgs: List<Organization>) {
     for (org in orgs) {
-        val localOrgDir = File(LocalRoot, org.name)
+        val localOrgDir = File(LocalReposRoot, org.name)
         if (!localOrgDir.exists()) {
             println("creating dir: $localOrgDir")
             FileUtils.forceMkdir(localOrgDir)
@@ -101,7 +108,7 @@ private fun cloneOrPullRepos(orgs: List<Organization>) {
 }
 
 private fun deleteNonExistLocalRepos(orgs: List<Organization>) {
-    for (orgDir in LocalRoot.listFiles()) {
+    for (orgDir in LocalReposRoot.listFiles()) {
         if (!orgExistsOnGithub(orgs, orgDir)) {
             println("delete not exist org: $orgDir")
             orgDir.deleteRecursively()
