@@ -37,5 +37,5 @@ private fun fetchMyOrgs(client: GitHubClient): List<User> {
 }
 
 private fun readGithubToken(): String {
-    return File("github-token.txt").readText()
+    return File("github-token.txt").readText().trim()
 }
