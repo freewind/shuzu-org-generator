@@ -1,12 +1,25 @@
 <html>
 <head>
     <title>数组网 - Demo驱动学习</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/css/site.css">
+    <link rel="stylesheet" href="/css/github-markdown-2.10.0.css">
+    <script src="/js/markdown-0.5.0.js"></script>
 </head>
 <body>
 <div id="header">
-    <span>数组网</span>
+    <span><a href="/">数组网</a></span>
     <span>Demo驱动学习</span>
 </div>
-@doLayout()
+<div class="markdown-body">
+    @doLayout()
+</div>
 </body>
+<script>
+   let tags = document.getElementsByClassName("markdown")
+   for(let i=0; i<tags.length; i++) {
+     let tag = tags[i];
+     tag.innerHTML = markdown.toHTML(tag.innerHTML)
+   }
+</script>
 </html>

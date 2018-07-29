@@ -1,12 +1,12 @@
 @import org.shuzu.generator.*
 @extends("layout")
-@args List<Organization> orgs
+@args Site site
 
 <div id="orgs">
     <div>
-        @for(Organization org: orgs) {
+        @for(Organization org: site.orgs@) {
         <div>
-            <div><a href="./orgs/@org.name@">@org.name@</a></div>
+            <div><a href="/@site.orgPath(org)">@org.name@</a></div>
             <div>@org.repos.size@ demos</div>
         </div>
         }

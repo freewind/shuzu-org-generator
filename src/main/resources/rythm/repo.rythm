@@ -1,16 +1,21 @@
 @import org.shuzu.generator.*
-@extends("layout")
+@args Site site
+@args Organization orgx
 @args Repository repo
+
+@extends("layout")
 
 <div>
     <div>@repo.name@</div>
     <div>@repo.description@</div>
-    <div>@repo.readme@</div>
+    @if(repo.getReadmeFile()!=null) {
+    <div class="markdown">@repo.getReadmeFile().getContent().raw()</div>
+    }
 </div>
 
-@for(CodeFile file: repo.files@) {
-<div>@file.name@</div>
-<div>@file.path@</div>
-<div>@file.content@</div>
+@for(ProjectFile file: repo.codeFiles@) {
+<div class="code-file">
+    <h3>@file.name@</h3>
+    <div><pre>@file.contentEscaped()</pre></div>
+</div>
 }
-

@@ -1,9 +1,11 @@
 package org.shuzu.generator
 
 import com.beust.klaxon.Klaxon
+import com.sun.tools.doclets.internal.toolkit.util.DocPath.relativePath
 import java.io.File
 import org.apache.commons.io.FileUtils
 import org.rythmengine.Rythm
+import java.nio.file.Paths
 
 object SyncGithubReposToLocal {
     @JvmStatic
@@ -21,13 +23,14 @@ object SiteGenerator {
     fun main(args: Array<String>) {
         val site = readSiteData()
         renderSite(site)
+        copySiteFiles()
     }
 }
 
 private val userHome = System.getProperty("user.home")
 private val LocalRoot = File(userHome, "tmp/shuzu-org-generator").also { FileUtils.forceMkdir(it) }
 private val LocalReposRoot = File(LocalRoot, "repos").also { if (!it.exists()) it.mkdirs() }
-private val SiteRoot = File(LocalRoot, "sites").also { if (!it.exists()) it.mkdirs() }
+private val SiteRoot = File(LocalRoot, "site").also { if (!it.exists()) it.mkdirs() }
 private val GithubReposInfoFile = File(LocalRoot, "github-repos.json")
 
 private fun saveToLocalFile(orgs: List<Organization>) {
@@ -41,16 +44,27 @@ private fun renderSite(site: Site) {
     }
 
     site.orgs.forEach { org ->
-        Rythm.render(File("src/main/resources/rythm/org.rythm"), site).run {
-            File(SiteRoot, "${org.name}/index.html").writeText(this)
+        Rythm.render(File("src/main/resources/rythm/org.rythm"), site, org).let { content ->
+            with(File(SiteRoot, site.orgPath(org))) {
+                FileUtils.forceMkdirParent(this)
+                writeText(content)
+            }
         }
 
         org.repos.forEach { repo ->
-            Rythm.render(File("src/main/resources/rythm/repo.rythm"), site).run {
-                File(SiteRoot, "${org.name}/${repo.name}.html").writeText(this)
+            Rythm.render(File("src/main/resources/rythm/repo.rythm"), site, org, repo).let { content ->
+                with(File(SiteRoot, site.repoPath(org, repo))) {
+                    FileUtils.forceMkdirParent(this)
+                    writeText(content)
+                }
             }
         }
     }
+}
+
+private fun copySiteFiles() {
+    val targetDir = File(SiteRoot, "site-files")
+    File("src/main/resources/site-files").copyRecursively(SiteRoot, overwrite = true)
 }
 
 private fun readSiteData(): Site {
@@ -58,20 +72,28 @@ private fun readSiteData(): Site {
     val orgs = Klaxon().parseArray<Organization>(json)!!
     return Site(orgs.map { org ->
         org.copy(repos = org.repos.map { repo ->
-            repo.copy(codeFiles = readCodeFiles(org, repo))
+            val files = readCodeFiles(org, repo)
+            val readme = files.find { it.name.toLowerCase() == "readme.md" }
+            val codeFiles = files.filterNot { it == readme }
+            repo.copy(readmeFile = readme, codeFiles = codeFiles)
         })
     })
 }
 
-private fun readCodeFiles(org: Organization, repo: Repository): List<CodeFile> {
+private fun readCodeFiles(org: Organization, repo: Repository): List<ProjectFile> {
     val dir = File(LocalReposRoot, "${org.name}/${repo.name}")
-    dir.walkTopDown().filter { file ->
+    val files = dir.walkTopDown().filter { file ->
         file.isFile && hasExpectedExtension(file) && !inExcludedDirs(file)
     }.map { file ->
-        // FIXME relative path
-        CodeFile(file.name, file.path, file.readText())
-    }
-    return listOf()
+        ProjectFile(file.name, relativePath(file, dir), file.readText())
+    }.toList()
+    return files
+}
+
+private fun relativePath(file: File, base: File): String {
+    val pathAbsolute = Paths.get(file.absolutePath)
+    val pathBase = Paths.get(base.absolutePath)
+    return pathBase.relativize(pathAbsolute).toString()
 }
 
 fun inExcludedDirs(file: File): Boolean {
@@ -82,7 +104,7 @@ fun inExcludedDirs(file: File): Boolean {
 fun hasExpectedExtension(file: File): Boolean {
     val extensions = listOf("java", "kt", "scala", "js", "ts", "css", "html", "go", "hx", "py", "rb",
             "xml", "gradle", "sql", "txt", "md")
-    return extensions.contains(file.name)
+    return extensions.contains(file.extension.toLowerCase())
 }
 
 private fun cloneOrPullRepos(orgs: List<Organization>) {
