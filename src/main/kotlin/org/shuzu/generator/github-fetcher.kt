@@ -25,6 +25,7 @@ private fun fetchOrgRepos(client: GitHubClient, org: User): List<Repository> {
     return service.getRepositories(org.login)
             .filterNot { it.isPrivate }
             .filterNot { it.isFork }
+            .filter { it.size > 0 }
             .map { repo ->
                 println("repo: ${repo.owner.login} / ${repo.name}")
                 Repository(repo.name, repo.url, repo.cloneUrl, repo.description, emptyList())
