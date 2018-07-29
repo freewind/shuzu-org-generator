@@ -16,6 +16,16 @@ apply plugin: 'application'
 
 mainClassName = 'org.shuzu.generator.Generator'
 
+task SyncGithubReposToLocal(type: JavaExec, dependsOn: classes) {
+    main = "org.shuzu.generator.SyncGithubReposToLocal"
+    classpath = sourceSets.main.runtimeClasspath
+}
+
+task SiteGenerator(type: JavaExec, dependsOn: classes) {
+    main = "org.shuzu.generator.SiteGenerator"
+    classpath = sourceSets.main.runtimeClasspath
+}
+
 repositories {
     mavenLocal()
     maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
