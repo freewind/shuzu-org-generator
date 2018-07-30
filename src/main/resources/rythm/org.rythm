@@ -1,11 +1,11 @@
 @import org.shuzu.generator.*
 @extends("layout")
 @args Site site
-@args Organization org
+@args Organization orgx
 
-@for(Repository repo: org.repos@) {
-<div>
-    <div><a href="/@site.repoPath(org, repo)">@repo.getName()</a></div>
-    <div>@repo.getDescription()</div>
-</div>
-}
+<h3><a href="/@site.orgPath(orgx)">@orgx.getName()</a></h3>
+<ul>
+    @for(Repository repo: orgx.getRepos()) {
+    <li><a href="/@site.repoPath(orgx, repo)">@repo.getName()</a></li>
+    }
+</ul>

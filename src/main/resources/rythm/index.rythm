@@ -3,12 +3,12 @@
 @args Site site
 
 <div id="orgs">
-    <div>
-        @for(Organization org: site.getOrgs()) {
-        <div>
-            <div><a href="/@site.orgPath(org)">@org.getName()</a></div>
-            <div>@org.repos.getSize() demos</div>
-        </div>
+    @for(Organization org: site.getOrgs()) {
+    <h3><a href="/@site.orgPath(org)">@org.getName()</a></h3>
+    <ul>
+        @for(Repository repo: org.getRepos()) {
+        <li><a href="/@site.repoPath(org, repo)">@repo.getName()</a></li>
         }
-    </div>
+    </ul>
+    }
 </div>

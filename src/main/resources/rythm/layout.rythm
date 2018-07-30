@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>数组网 - Demo驱动学习</title>
+    <title>数组网 - 彪悍的Demo无需解释</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="/css/site.css">
     <link rel="stylesheet" href="/css/github-markdown-2.10.0.css">
@@ -9,7 +9,7 @@
 <body>
 <div id="header">
     <span><a href="/">数组网</a></span>
-    <span>Demo驱动学习</span>
+    <span>彪悍的Demo无须解释</span>
 </div>
 <div class="markdown-body">
     @doLayout()
