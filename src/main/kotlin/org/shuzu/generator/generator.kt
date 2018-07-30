@@ -129,6 +129,7 @@ fun hasExpectedExtension(file: File): Boolean {
 }
 
 private fun cloneOrPullRepos(orgs: List<Organization>) {
+    val failedRepos = mutableListOf<Repository>()
     for (org in orgs) {
         val localOrgDir = File(LocalReposRoot, org.name)
         if (!localOrgDir.exists()) {
@@ -142,11 +143,22 @@ private fun cloneOrPullRepos(orgs: List<Organization>) {
                 println("git pull: $localRepoDir")
                 gitPull(localRepoDir)
             } else {
-
                 println("git clone ${repo.cloneUrl} to local: $localRepoDir")
-                gitClone(repo.cloneUrl, localRepoDir)
+                try {
+                    gitClone(repo.cloneUrl, localRepoDir)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    failedRepos.add(repo)
+                }
             }
         }
+    }
+    if (failedRepos.isNotEmpty()) {
+        println("----------------- failedRepos -------------------")
+        failedRepos.forEach { repo ->
+            println(repo.name)
+        }
+        throw Exception("some repos failed to sync")
     }
 }
 
