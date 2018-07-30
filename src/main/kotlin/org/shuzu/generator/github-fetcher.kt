@@ -15,7 +15,7 @@ fun fetchGithub(): List<Organization> {
     client.setOAuth2Token(readGithubToken())
     val orgs = fetchMyOrgs(client).map { org ->
         println("org: ${org.login}")
-        Organization(org.login, org.htmlUrl, fetchOrgRepos(client, org))
+        Organization(org.login, org.url, fetchOrgRepos(client, org))
     }
     return orgs.filter { it.repos.isNotEmpty() }
 }
