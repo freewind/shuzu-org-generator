@@ -10,9 +10,12 @@ fun repoPage(org: Organization, repo: Repository): String {
             id = "repo-main"
 
             div("navigation") {
-                div("org-link") { linkToOrg(org, org.name) }
-                div("repo-name") { +repo.name }
-                div("repo-description") { +(repo.description ?: "") }
+                span { linkToIndex("数组网") }
+                span { +" > " }
+                span("org-link") { linkToOrg(org, org.name) }
+                span { +" > " }
+                span("repo-name") { +repo.name }
+                span("repo-description") { +(repo.description ?: "") }
             }
             div {
                 id = "readme"
@@ -23,10 +26,10 @@ fun repoPage(org: Organization, repo: Repository): String {
             repo.codeFiles.forEach { file ->
                 div("code-file panel markdown-body") {
                     div("header") {
-                        span("name") {
+                        div("name") {
                             linkToGithubFile(repo, file, file.name)
                         }
-                        span("path") {
+                        div("path") {
                             +file.path
                         }
                     }
@@ -39,12 +42,13 @@ fun repoPage(org: Organization, repo: Repository): String {
                     }
                 }
             }
-            div("github") {
-                div("repo-url") {
-                    linkToGithubRepo(repo, "在Github上打开")
+            div("github markdown-body") {
+                span("github-icon") { img(src = "/images/github.jpg") }
+                span("repo-url") {
+                    linkToGithubRepo(repo, "打开Github项目地址")
                 }
-                div("repo-issues") {
-                    linkToRepoIssues(repo, "到Github Issues上讨论")
+                span("repo-issues") {
+                    linkToRepoIssues(repo, "有问题上Github Issues上讨论")
                 }
             }
         }

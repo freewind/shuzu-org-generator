@@ -17,7 +17,7 @@ fun fetchGithub(): List<Organization> {
         println("org: ${org.login}")
         Organization(org.login, org.url, fetchOrgRepos(client, org))
     }
-    return orgs
+    return orgs.filter { it.repos.isNotEmpty() }
 }
 
 private fun fetchOrgRepos(client: GitHubClient, org: User): List<Repository> {
@@ -26,7 +26,7 @@ private fun fetchOrgRepos(client: GitHubClient, org: User): List<Repository> {
             .filterNot { it.isPrivate }
             .map { repo ->
                 println("repo: ${repo.owner.login} / ${repo.name}")
-                Repository(repo.name, repo.url, repo.cloneUrl, repo.description, null, emptyList())
+                Repository(repo.name, repo.htmlUrl, repo.cloneUrl, repo.description, null, emptyList())
             }
 }
 

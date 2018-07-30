@@ -7,6 +7,11 @@ import org.shuzu.generator.ProjectFile
 import org.shuzu.generator.Repository
 import org.shuzu.generator.SitePaths
 
+
+fun TagConsumer<*>.linkToIndex(text: String) {
+    a("/") { +text }
+}
+
 fun TagConsumer<*>.linkToOrg(org: Organization, text: String) {
     a("/" + SitePaths.orgPath(org)) { +text }
 }

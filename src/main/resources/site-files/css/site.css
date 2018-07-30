@@ -1,0 +1,94 @@
+body {
+  font-size: 14px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+a {
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+#main {
+  max-width: 960px;
+  margin: 0 auto;
+}
+#header {
+  font-size: 20px;
+  text-align: center;
+}
+#header .site-name {
+  display: none;
+}
+#header .site-url {
+  display: none;
+}
+#header .site-slogan {
+  font-size: 50px;
+  line-height: 100px;
+}
+.panel {
+  margin-top: 16px;
+  margin-bottom: 16px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+}
+.panel .header {
+  font-size: 24px;
+  font-weight: bold;
+  line-height: 50px;
+  padding-left: 15px;
+  padding-top: 10px;
+}
+.panel .body {
+  font-size: 16px;
+}
+#index-main .org .body,
+#org-main .org .body {
+  padding: 20px;
+}
+#index-main .org .org-name,
+#org-main .org .org-name {
+  font-size: 28px;
+}
+#index-main .org .org-name a,
+#org-main .org .org-name a {
+  color: #004AC0;
+}
+.navigation {
+  font-size: 16px;
+  line-height: 40px;
+}
+.navigation .repo-description {
+  display: inline;
+}
+#repo-main .code-file .header {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+#repo-main .code-file .header .name {
+  line-height: 40px;
+}
+#repo-main .code-file .header .path {
+  font-size: 14px;
+  color: #CCC;
+  font-weight: normal;
+  line-height: 30px;
+}
+#repo-main .code-file .content {
+  margin-bottom: 0;
+}
+#repo-main .github {
+  padding: 20px 0;
+  font-size: 16px;
+}
+#repo-main .github .github-icon img {
+  height: 20px;
+}
+#repo-main .github .repo-url {
+  padding-left: 15px;
+  line-height: 20px;
+}
+#repo-main .github .repo-issues {
+  padding-left: 15px;
+  line-height: 20px;
+}

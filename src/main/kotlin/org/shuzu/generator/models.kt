@@ -1,10 +1,7 @@
 package org.shuzu.generator
 
-import org.apache.commons.lang3.StringEscapeUtils
-
 data class ProjectFile(val name: String, val path: String,
                        val content: String) {
-    fun contentEscaped() = StringEscapeUtils.escapeHtml4(content)
     val language: String = name.substringAfterLast(".")
 }
 
@@ -14,7 +11,7 @@ data class Repository(val name: String, val url: String,
                       val readmeFile: ProjectFile? = null,
                       val codeFiles: List<ProjectFile> = emptyList()) {
     val issuesUrl = "$url/issues?q="
-    fun fileUrl(file: ProjectFile): String = "$url/${file.path}"
+    fun fileUrl(file: ProjectFile): String = "$url/blob/master/${file.path}"
 }
 
 data class Organization(val name: String, val url: String, val repos: List<Repository>)

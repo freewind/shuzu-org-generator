@@ -1,34 +1,66 @@
 body {
     font-size: 14px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+a {
+    text-decoration: none;
+    &:hover {
+        text-decoration: underline;
+    }
 }
 
 #main {
-    width: 1200px;
+    max-width: 960px;
     margin: 0 auto;
 }
 
+#header {
+    font-size: 20px;
+    text-align: center;
+    .site-name {
+        display: none;
+    }
+    .site-url {
+        display: none;
+    }
+    .site-slogan {
+        font-size: 50px;
+        line-height: 100px;
+    }
+}
+
 .panel {
-    position: relative;
     margin-top: 16px;
     margin-bottom: 16px;
     border: 1px solid #ddd;
     border-radius: 3px;
 
     .header {
-        font-size: 18px;
+        font-size: 24px;
         font-weight: bold;
         line-height: 50px;
         padding-left: 15px;
+        padding-top: 10px;
     }
     .body {
-        font-size: 14px;
-        padding: 10px;
+        font-size: 16px;
     }
 }
 
-#index-main {
+#index-main,#org-main {
     .org {
-        .org-name {}
+        .header {
+        }
+        .body {
+            padding: 20px;
+        }
+        .org-name {
+            font-size: 28px;
+            a {
+                 color: #004AC0;
+            }
+        }
         .repo {
             .repo-name {}
             .repo-description {}
@@ -40,20 +72,53 @@ body {
 
 }
 
-#repo-main {
-    .navigation {
-        .org-link {}
-        .repo-name {}
-        .repo-description {}
+.navigation {
+    font-size: 16px;
+    line-height: 40px;
+    .org-link {
     }
+    .repo-name {
+    }
+    .repo-description {
+        display: inline;
+    }
+}
+
+#repo-main {
     #readme {}
     .code-file {
-        .name {}
-        .path {}
-        .content {}
+        .header {
+            padding-top: 10px;
+            padding-bottom: 10px;
+            .name {
+                line-height: 40px;
+            }
+            .path {
+                font-size: 14px;
+                color: #CCC;
+                font-weight: normal;
+                line-height: 30px;
+            }
+        }
+        .content {
+            margin-bottom: 0;
+        }
     }
     .github {
-        .repo-url {}
-        .repo-issues {}
+        padding: 20px 0;
+        font-size: 16px;
+        .github-icon {
+            img {
+                height: 20px;
+            }
+        }
+        .repo-url {
+            padding-left: 15px;
+            line-height:20px;
+        }
+        .repo-issues {
+            padding-left: 15px;
+            line-height:20px;
+        }
     }
 }
