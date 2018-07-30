@@ -28,6 +28,7 @@ fun layout(body: TagConsumer<StringWriter>.() -> Unit): String {
                 page.body()
             }
             script(src = "/js/site.js") {}
+            script(src = "https://s13.cnzz.com/z_stat.php?id=1274292847&web_id=1274292847", type = "javascript") {}
         }
     }.toString()
 }
