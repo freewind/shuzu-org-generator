@@ -16,6 +16,11 @@ apply plugin: 'application'
 
 mainClassName = 'org.shuzu.generator.Generator'
 
+task DoAll(type: JavaExec, dependsOn: classes) {
+    main = "org.shuzu.generator.DoAll"
+    classpath = sourceSets.main.runtimeClasspath
+}
+
 task FetchGithubData(type: JavaExec, dependsOn: classes) {
     main = "org.shuzu.generator.FetchGithubData"
     classpath = sourceSets.main.runtimeClasspath

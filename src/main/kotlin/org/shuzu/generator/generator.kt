@@ -9,6 +9,15 @@ import org.shuzu.generator.templates.orgPage
 import java.io.File
 import java.nio.file.Paths
 
+object DoAll {
+    @JvmStatic
+    fun main(args: Array<String>) {
+        FetchGithubData.main(args)
+        SyncLocalRepos.main(args)
+        SiteGenerator.main(args)
+    }
+}
+
 object FetchGithubData {
     @JvmStatic
     fun main(args: Array<String>) {
