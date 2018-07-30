@@ -1,3 +1,32 @@
+body {
+    font-size: 14px;
+}
+
+#main {
+    width: 1200px;
+    margin: 0 auto;
+}
+
+.panel {
+    position: relative;
+    margin-top: 16px;
+    margin-bottom: 16px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+}
+
+.panel .title {
+    font-size: 18px;
+    font-weight: bold;
+    line-height: 50px;
+    padding-left: 15px;
+}
+
+.panel .body {
+    font-size: 14px;
+    padding: 10px;
+}
+
 .filepath {
   font-size: 20px;
   font-weight: bold;

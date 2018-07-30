@@ -11,7 +11,7 @@
     <span><a href="/">数组网</a></span>
     <span>彪悍的Demo无须解释</span>
 </div>
-<div class="markdown-body">
+<div id="main">
     @doLayout()
 </div>
 </body>

@@ -1,10 +1,12 @@
 package org.shuzu.generator
 
 import com.beust.klaxon.Klaxon
-import com.sun.tools.doclets.internal.toolkit.util.DocPath.relativePath
-import java.io.File
 import org.apache.commons.io.FileUtils
 import org.rythmengine.Rythm
+import org.shuzu.generator.templates.indexPage
+import org.shuzu.generator.templates.repoPage
+import org.shuzu.generator.templates.orgPage
+import java.io.File
 import java.nio.file.Paths
 
 object SyncGithubReposToLocal {
@@ -39,21 +41,21 @@ private fun saveToLocalFile(orgs: List<Organization>) {
 }
 
 private fun renderSite(site: Site) {
-    Rythm.render(File("src/main/resources/rythm/index.rythm"), site).run {
+    indexPage(site.orgs).run {
         File(SiteRoot, "index.html").writeText(this)
     }
 
     site.orgs.forEach { org ->
-        Rythm.render(File("src/main/resources/rythm/org.rythm"), site, org).let { content ->
-            with(File(SiteRoot, site.orgPath(org))) {
+        orgPage(org).let { content ->
+            with(File(SiteRoot, SitePaths.orgPath(org))) {
                 FileUtils.forceMkdirParent(this)
                 writeText(content)
             }
         }
 
         org.repos.forEach { repo ->
-            Rythm.render(File("src/main/resources/rythm/repo.rythm"), site, org, repo).let { content ->
-                with(File(SiteRoot, site.repoPath(org, repo))) {
+            repoPage(repo).let { content ->
+                with(File(SiteRoot, SitePaths.repoPath(org, repo))) {
                     FileUtils.forceMkdirParent(this)
                     writeText(content)
                 }
@@ -63,7 +65,7 @@ private fun renderSite(site: Site) {
 }
 
 private fun copySiteFiles() {
-    val targetDir = File(SiteRoot, "site-files")
+//    val targetDir = File(SiteRoot, "site-files")
     File("src/main/resources/site-files").copyRecursively(SiteRoot, overwrite = true)
 }
 

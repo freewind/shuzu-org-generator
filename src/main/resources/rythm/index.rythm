@@ -2,13 +2,17 @@
 @extends("layout")
 @args Site site
 
-<div id="orgs">
-    @for(Organization org: site.getOrgs()) {
-    <h3><a href="/@site.orgPath(org)">@org.getName()</a></h3>
-    <ul>
-        @for(Repository repo: org.getRepos()) {
-        <li><a href="/@site.repoPath(org, repo)">@repo.getName()</a></li>
-        }
-    </ul>
-    }
+@for(Organization org: site.getOrgs()) {
+<div>
+    <h4><a href="/@site.orgPath(org)">@org.getName()</a></h4>
+    <div class="panel">
+        <div class="body markdown-body">
+            <ul>
+                @for(Repository repo: org.getRepos()) {
+                <li><a href="/@site.repoPath(org, repo)">@repo.getName()</a></li>
+                }
+            </ul>
+        </div>
+    </div>
 </div>
+}
