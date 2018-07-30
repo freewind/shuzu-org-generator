@@ -139,17 +139,17 @@ private fun cloneOrPullRepos(orgs: List<Organization>) {
 
         for (repo in org.repos) {
             val localRepoDir = File(localOrgDir, repo.name)
-            if (localRepoDir.exists()) {
-                println("git pull: $localRepoDir")
-                gitPull(localRepoDir)
-            } else {
-                println("git clone ${repo.cloneUrl} to local: $localRepoDir")
-                try {
+            try {
+                if (localRepoDir.exists()) {
+                    println("git pull: $localRepoDir")
+                    gitPull(localRepoDir)
+                } else {
+                    println("git clone ${repo.cloneUrl} to local: $localRepoDir")
                     gitClone(repo.cloneUrl, localRepoDir)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    failedRepos.add(repo)
                 }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                failedRepos.add(repo)
             }
         }
     }
