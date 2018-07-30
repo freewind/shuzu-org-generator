@@ -54,7 +54,7 @@ private fun renderSite(site: Site) {
         }
 
         org.repos.forEach { repo ->
-            repoPage(repo).let { content ->
+            repoPage(org, repo).let { content ->
                 with(File(SiteRoot, SitePaths.repoPath(org, repo))) {
                     FileUtils.forceMkdirParent(this)
                     writeText(content)
