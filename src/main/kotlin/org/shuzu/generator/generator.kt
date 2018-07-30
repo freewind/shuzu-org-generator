@@ -2,10 +2,9 @@ package org.shuzu.generator
 
 import com.beust.klaxon.Klaxon
 import org.apache.commons.io.FileUtils
-import org.rythmengine.Rythm
 import org.shuzu.generator.templates.indexPage
-import org.shuzu.generator.templates.repoPage
 import org.shuzu.generator.templates.orgPage
+import org.shuzu.generator.templates.repoPage
 import java.io.File
 import java.nio.file.Paths
 
