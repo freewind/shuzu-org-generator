@@ -16,8 +16,13 @@ apply plugin: 'application'
 
 mainClassName = 'org.shuzu.generator.Generator'
 
-task SyncGithubReposToLocal(type: JavaExec, dependsOn: classes) {
-    main = "org.shuzu.generator.SyncGithubReposToLocal"
+task FetchGithubData(type: JavaExec, dependsOn: classes) {
+    main = "org.shuzu.generator.FetchGithubData"
+    classpath = sourceSets.main.runtimeClasspath
+}
+
+task SyncLocalRepos(type: JavaExec, dependsOn: classes) {
+    main = "org.shuzu.generator.SyncLocalRepos"
     classpath = sourceSets.main.runtimeClasspath
 }
 

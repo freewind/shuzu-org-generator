@@ -9,12 +9,18 @@ import org.shuzu.generator.templates.orgPage
 import java.io.File
 import java.nio.file.Paths
 
-object SyncGithubReposToLocal {
+object FetchGithubData {
     @JvmStatic
     fun main(args: Array<String>) {
         val orgs = fetchGithub()
         saveToLocalFile(orgs)
+    }
+}
 
+object SyncLocalRepos {
+    @JvmStatic
+    fun main(args: Array<String>) {
+        val orgs = readCachedGithubData()
         deleteNonExistLocalRepos(orgs)
         cloneOrPullRepos(orgs)
     }
@@ -70,8 +76,7 @@ private fun copySiteFiles() {
 }
 
 private fun readSiteData(): Site {
-    val json = GithubReposInfoFile.readText()
-    val orgs = Klaxon().parseArray<Organization>(json)!!
+    val orgs = readCachedGithubData()
     return Site(orgs.map { org ->
         org.copy(repos = org.repos.map { repo ->
             val files = readCodeFiles(org, repo)
@@ -80,6 +85,12 @@ private fun readSiteData(): Site {
             repo.copy(readmeFile = readme, codeFiles = codeFiles)
         })
     })
+}
+
+private fun readCachedGithubData(): List<Organization> {
+    val json = GithubReposInfoFile.readText()
+    val orgs = Klaxon().parseArray<Organization>(json)!!
+    return orgs
 }
 
 private fun readCodeFiles(org: Organization, repo: Repository): List<ProjectFile> {
