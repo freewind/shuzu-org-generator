@@ -4,10 +4,10 @@
 
 <div id="orgs">
     <div>
-        @for(Organization org: site.orgs@) {
+        @for(Organization org: site.getOrgs()) {
         <div>
-            <div><a href="/@site.orgPath(org)">@org.name@</a></div>
-            <div>@org.repos.size@ demos</div>
+            <div><a href="/@site.orgPath(org)">@org.getName()</a></div>
+            <div>@org.repos.getSize() demos</div>
         </div>
         }
     </div>

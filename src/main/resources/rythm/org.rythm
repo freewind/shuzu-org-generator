@@ -5,7 +5,7 @@
 
 @for(Repository repo: org.repos@) {
 <div>
-    <div><a href="/@site.repoPath(org, repo)">@repo.name@</a></div>
-    <div>@repo.description@</div>
+    <div><a href="/@site.repoPath(org, repo)">@repo.getName()</a></div>
+    <div>@repo.getDescription()</div>
 </div>
 }

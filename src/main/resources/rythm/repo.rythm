@@ -6,16 +6,16 @@
 @extends("layout")
 
 <div>
-    <div>@repo.name@</div>
-    <div>@repo.description@</div>
+    <div>@repo.getName()</div>
+    <div>@repo.getDescription()</div>
     @if(repo.getReadmeFile()!=null) {
     <div class="markdown">@repo.getReadmeFile().getContent().raw()</div>
     }
 </div>
 
-@for(ProjectFile file: repo.codeFiles@) {
+@for(ProjectFile file: repo.getCodeFiles()) {
 <div class="code-file">
-    <h3>@file.name@</h3>
+    <h3>@file.getName()</h3>
     <div><pre>@file.contentEscaped()</pre></div>
 </div>
 }
