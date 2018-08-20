@@ -48,8 +48,15 @@ private val LocalRoot = File(userHome, "tmp/shuzu-org-generator").also { FileUti
 private val LocalReposRoot = File(LocalRoot, "repos").also { if (!it.exists()) it.mkdirs() }
 //private val SiteRoot = File(LocalRoot, "site").also { if (!it.exists()) it.mkdirs() }
 private val GithubReposInfoFile = File(LocalRoot, "github-repos.json")
-private val GeneratedSummarySiteJson = File(LocalRoot, "generated/site-summary.json")
-private fun generatedRepoJson(repo: Repository) = File(LocalRoot, "generated/repos/${repo.name}.json")
+private val GeneratedSummarySiteJson = File(LocalRoot, "generated/site-summary.json").also {
+    val dir = it.parentFile
+    if (!dir.exists()) dir.mkdirs()
+}
+
+private fun generatedRepoJson(repo: Repository) = File(LocalRoot, "generated/repos/${repo.name}.json").also {
+    val dir = it.parentFile
+    if (!dir.exists()) dir.mkdirs()
+}
 
 private fun saveToLocalFile(org: Organization) {
     val json = Klaxon().toJsonString(org)
