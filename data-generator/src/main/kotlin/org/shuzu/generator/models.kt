@@ -17,7 +17,7 @@ data class Repository(val name: String, val url: String,
 data class Organization(val name: String, val url: String, val repos: List<Repository>)
 
 data class Site(
-        val orgs: List<Organization>
+        val org: Organization
 )
 
 object SitePaths {
