@@ -10,7 +10,7 @@ object DoAll {
     fun main(args: Array<String>) {
         FetchGithubData.main(args)
         SyncLocalRepos.main(args)
-        SiteGenerator.main(args)
+        DataGenerator.main(args)
     }
 }
 
@@ -31,7 +31,7 @@ object SyncLocalRepos {
     }
 }
 
-object SiteGenerator {
+object DataGenerator {
     @JvmStatic
     fun main(args: Array<String>) {
         val site = calcSiteData()
