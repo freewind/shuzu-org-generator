@@ -35,7 +35,8 @@ object SiteGenerator {
     @JvmStatic
     fun main(args: Array<String>) {
         val site = calcSiteData()
-        renderJson(site)
+        renderSummaryJson(site)
+        renderRepoJson(site.org.repos)
 //        renderSite(site)
 //        copySiteFiles()
     }
@@ -47,16 +48,34 @@ private val LocalRoot = File(userHome, "tmp/shuzu-org-generator").also { FileUti
 private val LocalReposRoot = File(LocalRoot, "repos").also { if (!it.exists()) it.mkdirs() }
 //private val SiteRoot = File(LocalRoot, "site").also { if (!it.exists()) it.mkdirs() }
 private val GithubReposInfoFile = File(LocalRoot, "github-repos.json")
-private val GeneratedSiteJson = File(LocalRoot, "generated/site.json")
+private val GeneratedSummarySiteJson = File(LocalRoot, "generated/site-summary.json")
+private fun generatedRepoJson(repo: Repository) = File(LocalRoot, "generated/repos/${repo.name}.json")
 
 private fun saveToLocalFile(org: Organization) {
     val json = Klaxon().toJsonString(org)
     GithubReposInfoFile.writeText(json)
 }
 
-private fun renderJson(site: Site) {
-    val json = Klaxon().toJsonString(site)
-    GeneratedSiteJson.writeText(json)
+private fun renderSummaryJson(site: Site) {
+    val fileContentRemoved = with(site) {
+        copy(org = with(org) {
+            copy(repos = repos.map { repo ->
+                with(repo) {
+                    copy(readmeFile = null, codeFiles = emptyList())
+                }
+            })
+        })
+    }
+    val json = Klaxon().toJsonString(fileContentRemoved)
+    GeneratedSummarySiteJson.writeText(json)
+}
+
+private fun renderRepoJson(repos: List<Repository>) {
+    repos.forEach { repo ->
+        val file = generatedRepoJson(repo)
+        val json = Klaxon().toJsonString(repo)
+        file.writeText(json)
+    }
 }
 
 //private fun renderSite(site: Site) {
