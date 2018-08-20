@@ -10,14 +10,12 @@ fun main(args: Array<String>) {
     println(fetchGithub())
 }
 
-fun fetchGithub(): List<Organization> {
-    val client = GitHubClient()
-    client.setOAuth2Token(readGithubToken())
-    val orgs = fetchMyOrgs(client).map { org ->
-        println("org: ${org.login}")
-        Organization(org.login, org.url, fetchOrgRepos(client, org))
+fun fetchGithub(): Organization {
+    val client = GitHubClient().apply {
+        setOAuth2Token(readGithubToken())
     }
-    return orgs.filter { it.repos.isNotEmpty() }
+    val org = fetchFreewindDemosOrg(client)
+    return Organization(org.login, org.url, fetchOrgRepos(client, org))
 }
 
 private fun fetchOrgRepos(client: GitHubClient, org: User): List<Repository> {
@@ -30,9 +28,9 @@ private fun fetchOrgRepos(client: GitHubClient, org: User): List<Repository> {
             }
 }
 
-private fun fetchMyOrgs(client: GitHubClient): List<User> {
+private fun fetchFreewindDemosOrg(client: GitHubClient): User {
     val service = OrganizationService(client)
-    return service.organizations.filter { it.login.endsWith("-demos") }
+    return service.organizations.find { it.login == "freewind-demos" }!!
 }
 
 private fun readGithubToken(): String {

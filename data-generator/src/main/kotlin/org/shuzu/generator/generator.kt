@@ -20,8 +20,8 @@ object DoAll {
 object FetchGithubData {
     @JvmStatic
     fun main(args: Array<String>) {
-        val orgs = fetchGithub()
-        saveToLocalFile(orgs)
+        val org = fetchGithub()
+        saveToLocalFile(org)
     }
 }
 
@@ -49,8 +49,8 @@ private val LocalReposRoot = File(LocalRoot, "repos").also { if (!it.exists()) i
 private val SiteRoot = File(LocalRoot, "site").also { if (!it.exists()) it.mkdirs() }
 private val GithubReposInfoFile = File(LocalRoot, "github-repos.json")
 
-private fun saveToLocalFile(orgs: List<Organization>) {
-    val json = Klaxon().toJsonString(orgs)
+private fun saveToLocalFile(org: Organization) {
+    val json = Klaxon().toJsonString(org)
     GithubReposInfoFile.writeText(json)
 }
 
