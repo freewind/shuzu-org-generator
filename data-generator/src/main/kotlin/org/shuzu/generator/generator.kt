@@ -1,6 +1,6 @@
 package org.shuzu.generator
 
-import com.beust.klaxon.Klaxon
+import com.google.gson.Gson
 import org.apache.commons.io.FileUtils
 import java.io.File
 import java.nio.file.Paths
@@ -59,28 +59,29 @@ private fun generatedRepoJson(repo: Repository) = File(LocalRoot, "generated/rep
 }
 
 private fun saveToLocalFile(org: Organization) {
-    val json = Klaxon().toJsonString(org)
+    val json = Gson().toJson(org)
     GithubReposInfoFile.writeText(json)
 }
 
 private fun renderSummaryJson(site: Site) {
-    val fileContentRemoved = with(site) {
-        copy(org = with(org) {
-            copy(repos = repos.map { repo ->
-                with(repo) {
-                    copy(readmeFile = null, codeFiles = emptyList())
-                }
-            })
-        })
+    val repos = site.org.repos.map { repo ->
+        SimpleRepo(
+                repo.name,
+                urlPath = run {
+                    val path = repo.url.removePrefix("https://github.com/freewind-demos/")
+                    if (path == repo.name) null else path
+                },
+                description = repo.description
+        )
     }
-    val json = Klaxon().toJsonString(fileContentRemoved)
+    val json = Gson().toJson(repos)
     GeneratedSummarySiteJson.writeText(json)
 }
 
 private fun renderRepoJson(repos: List<Repository>) {
     repos.forEach { repo ->
         val file = generatedRepoJson(repo)
-        val json = Klaxon().toJsonString(repo)
+        val json = Gson().toJson(repo)
         file.writeText(json)
     }
 }
@@ -126,7 +127,7 @@ private fun calcSiteData(): Site {
 
 private fun readCachedGithubData(): Organization {
     val json = GithubReposInfoFile.readText()
-    return Klaxon().parse<Organization>(json)!!
+    return Gson().fromJson(json, Organization::class.java)!!
 }
 
 private fun readCodeFiles(org: Organization, repo: Repository): List<ProjectFile> {

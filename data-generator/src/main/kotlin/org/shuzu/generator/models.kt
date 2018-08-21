@@ -1,5 +1,7 @@
 package org.shuzu.generator
 
+data class SimpleRepo(val name: String, val urlPath: String? = null, val description: String? = null, val topics: List<String>? = null)
+
 data class ProjectFile(val name: String, val path: String,
                        val content: String) {
     val language: String = name.substringAfterLast(".")
