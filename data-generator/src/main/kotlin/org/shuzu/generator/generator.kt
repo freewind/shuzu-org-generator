@@ -2,6 +2,8 @@ package org.shuzu.generator
 
 import com.google.gson.Gson
 import org.apache.commons.io.FileUtils
+import org.shuzu.generator.templates.indexPage
+import org.shuzu.generator.templates.repoPage
 import java.io.File
 import java.nio.file.Paths
 
@@ -17,17 +19,17 @@ object DoAll {
 object FetchGithubData {
     @JvmStatic
     fun main(args: Array<String>) {
-        val org = fetchGithub()
-        saveToLocalFile(org)
+        val site = fetchGithub()
+        saveToLocalFile(site)
     }
 }
 
 object SyncLocalRepos {
     @JvmStatic
     fun main(args: Array<String>) {
-        val org = readCachedGithubData()
-        deleteNonExistLocalRepos(org)
-        cloneOrPullRepos(org)
+        val site = readCachedGithubData()
+        deleteNonExistLocalRepos(site)
+        cloneOrPullRepos(site)
     }
 }
 
@@ -35,9 +37,8 @@ object DataGenerator {
     @JvmStatic
     fun main(args: Array<String>) {
         val site = calcSiteData()
-        renderSummaryJson(site)
-        renderRepoJson(site.org.repos)
-//        renderSite(site)
+        renderLiveSearchData(site)
+        renderSite(site)
 //        copySiteFiles()
     }
 
@@ -46,30 +47,25 @@ object DataGenerator {
 private val userHome = System.getProperty("user.home")
 private val LocalRoot = File(userHome, "tmp/shuzu-org-generator").also { FileUtils.forceMkdir(it) }
 private val LocalReposRoot = File(LocalRoot, "repos").also { if (!it.exists()) it.mkdirs() }
-//private val SiteRoot = File(LocalRoot, "site").also { if (!it.exists()) it.mkdirs() }
+private val SiteRoot = File(LocalRoot, "site").also { if (!it.exists()) it.mkdirs() }
 private val GithubReposInfoFile = File(LocalRoot, "github-repos.json")
 private val GeneratedSummarySiteJson = File(LocalRoot, "generated/site-summary.json").also {
     val dir = it.parentFile
     if (!dir.exists()) dir.mkdirs()
 }
 
-private fun generatedRepoJson(repo: Repository) = File(LocalRoot, "generated/repos/${repo.name}.json").also {
-    val dir = it.parentFile
-    if (!dir.exists()) dir.mkdirs()
-}
-
-private fun saveToLocalFile(org: Organization) {
-    val json = Gson().toJson(org)
+private fun saveToLocalFile(site: Site) {
+    val json = Gson().toJson(site)
     GithubReposInfoFile.writeText(json)
 }
 
-private fun renderSummaryJson(site: Site) {
-    val repos = site.org.repos.map { repo ->
+private fun renderLiveSearchData(site: Site) {
+    val repos = site.repos.map { repo ->
         SimpleRepo(
                 repo.name,
                 urlPath = run {
-                    val path = repo.url.removePrefix("https://github.com/freewind-demos/")
-                    if (path == repo.name) null else path
+                    val path = repo.githubUrl.removePrefix("https://github.com/freewind-demos/")
+                    path.takeIf { it != repo.name }
                 },
                 description = repo.description
         )
@@ -78,59 +74,39 @@ private fun renderSummaryJson(site: Site) {
     GeneratedSummarySiteJson.writeText(json)
 }
 
-private fun renderRepoJson(repos: List<Repository>) {
-    repos.forEach { repo ->
-        val file = generatedRepoJson(repo)
-        val json = Gson().toJson(repo)
-        file.writeText(json)
+private fun renderSite(site: Site) {
+    indexPage(site)
+    site.repos.forEach { repo ->
+        repoPage(site, repo).let { content ->
+            with(File(SiteRoot, SitePaths.repoPath(repo))) {
+                FileUtils.forceMkdirParent(this)
+                writeText(content)
+            }
+        }
     }
 }
 
-//private fun renderSite(site: Site) {
-//    indexPage(site.orgs).run {
-//        File(SiteRoot, "index.html").writeText(this)
-//    }
-//
-//    site.orgs.forEach { org ->
-//        orgPage(org).let { content ->
-//            with(File(SiteRoot, SitePaths.orgPath(org))) {
-//                FileUtils.forceMkdirParent(this)
-//                writeText(content)
-//            }
-//        }
-//
-//        org.repos.forEach { repo ->
-//            repoPage(org, repo).let { content ->
-//                with(File(SiteRoot, SitePaths.repoPath(org, repo))) {
-//                    FileUtils.forceMkdirParent(this)
-//                    writeText(content)
-//                }
-//            }
-//        }
-//    }
-//}
-
-//private fun copySiteFiles() {
-////    val targetDir = File(SiteRoot, "site-files")
-//    File("src/main/resources/site-files").copyRecursively(SiteRoot, overwrite = true)
-//}
+private fun copySiteFiles() {
+//    val targetDir = File(SiteRoot, "site-files")
+    File("src/main/resources/site-files").copyRecursively(SiteRoot, overwrite = true)
+}
 
 private fun calcSiteData(): Site {
-    val org = readCachedGithubData()
-    return Site(org.copy(repos = org.repos.map { repo ->
-        val files = readCodeFiles(org, repo)
+    val site = readCachedGithubData()
+    return Site(repos = site.repos.map { repo ->
+        val files = readCodeFiles(site, repo)
         val readme = files.find { it.name.toLowerCase() == "readme.md" }
         val codeFiles = files.filterNot { it == readme }
         repo.copy(readmeFile = readme, codeFiles = codeFiles)
-    }))
+    })
 }
 
-private fun readCachedGithubData(): Organization {
+private fun readCachedGithubData(): Site {
     val json = GithubReposInfoFile.readText()
-    return Gson().fromJson(json, Organization::class.java)!!
+    return Gson().fromJson(json, Site::class.java)!!
 }
 
-private fun readCodeFiles(org: Organization, repo: Repository): List<ProjectFile> {
+private fun readCodeFiles(org: Site, repo: Repository): List<ProjectFile> {
     val dir = File(LocalReposRoot, "${org.name}/${repo.name}")
     val files = dir.walkTopDown().filter { file ->
         file.isFile && hasExpectedExtension(file) && !inExcludedDirs(file)
@@ -157,18 +133,11 @@ fun hasExpectedExtension(file: File): Boolean {
     return extensions.contains(file.extension.toLowerCase())
 }
 
-private fun cloneOrPullRepos(org: Organization) {
+private fun cloneOrPullRepos(site: Site) {
     val failedRepos = mutableListOf<Repository>()
 
-    val localOrgDir = File(LocalReposRoot, org.name).also { dir ->
-        if (!dir.exists()) {
-            println("creating dir: $dir")
-            FileUtils.forceMkdir(dir)
-        }
-    }
-
-    for (repo in org.repos) {
-        val localRepoDir = File(localOrgDir, repo.name)
+    for (repo in site.repos) {
+        val localRepoDir = File(LocalReposRoot, repo.name)
         try {
             if (localRepoDir.exists()) {
                 println("git pull: $localRepoDir")
@@ -191,24 +160,16 @@ private fun cloneOrPullRepos(org: Organization) {
     }
 }
 
-private fun deleteNonExistLocalRepos(org: Organization) {
-    for (orgDir in LocalReposRoot.listFiles()) {
-        if (org.name != orgDir.name) {
-            println("delete not exist org: $orgDir")
-            orgDir.deleteRecursively()
+private fun deleteNonExistLocalRepos(site: Site) {
+    for (repoDir in LocalReposRoot.listFiles()) {
+        if (!repoExistsOnGithub(site, repoDir)) {
+            println("delete not exist repo: $repoDir")
+            repoDir.deleteRecursively()
             continue
-        }
-
-        for (repoDir in orgDir.listFiles()) {
-            if (!repoExistsOnGithub(org, repoDir)) {
-                println("delete not exist repo: $repoDir")
-                repoDir.deleteRecursively()
-                continue
-            }
         }
     }
 }
 
-private fun repoExistsOnGithub(org: Organization, repoDir: File): Boolean {
-    return org.name == repoDir.parentFile.name && org.repos.any { it.name == repoDir.name }
+private fun repoExistsOnGithub(site: Site, repoDir: File): Boolean {
+    return site.repos.map { it.name }.contains(repoDir.name)
 }

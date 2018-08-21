@@ -1,35 +1,13 @@
 package org.shuzu.generator.templates
 
 import kotlinx.html.*
-import org.shuzu.generator.Organization
+import org.shuzu.generator.Site
 
-fun indexPage(orgs: List<Organization>): String {
+fun indexPage(site: Site): String {
     return layout {
         div {
             id = "index-main"
-            for (org in orgs) {
-                div("org") {
-                    div("panel") {
-                        div("header") {
-                            span("org-name") { linkToOrg(org, org.name) }
-                        }
-                        div("body markdown-body") {
-                            ul {
-                                for (repo in org.repos) {
-                                    li("repo") {
-                                        span("repo-name") { linkToRepo(org, repo, repo.name) }
-                                        span("repo-description") {
-                                            +(repo.description ?: "")
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                    }
-                }
-            }
-
+            div("tip") { +"当前共有 ${site.demoCount} 个Demo" }
         }
     }
 }

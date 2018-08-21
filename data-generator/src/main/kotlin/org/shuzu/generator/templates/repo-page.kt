@@ -1,18 +1,16 @@
 package org.shuzu.generator.templates
 
 import kotlinx.html.*
-import org.shuzu.generator.Organization
+import org.shuzu.generator.Site
 import org.shuzu.generator.Repository
 
-fun repoPage(org: Organization, repo: Repository): String {
+fun repoPage(org: Site, repo: Repository): String {
     return layout {
         div {
             id = "repo-main"
 
             div("navigation") {
                 span { linkToIndex("数组网") }
-                span { +" > " }
-                span("org-link") { linkToOrg(org, org.name) }
                 span { +" > " }
                 span("repo-name") { +repo.name }
                 span("repo-description") { +(repo.description ?: "") }
