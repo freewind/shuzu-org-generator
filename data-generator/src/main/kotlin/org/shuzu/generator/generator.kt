@@ -49,10 +49,6 @@ private val LocalRoot = File(userHome, "tmp/shuzu-org-generator").also { FileUti
 private val LocalReposRoot = File(LocalRoot, "repos").also { if (!it.exists()) it.mkdirs() }
 private val SiteRoot = File(LocalRoot, "site").also { if (!it.exists()) it.mkdirs() }
 private val GithubReposInfoFile = File(LocalRoot, "github-repos.json")
-private val GeneratedSummarySiteJson = File(LocalRoot, "generated/site-summary.json").also {
-    val dir = it.parentFile
-    if (!dir.exists()) dir.mkdirs()
-}
 
 private fun saveToLocalFile(site: Site) {
     val json = Gson().toJson(site)
@@ -71,7 +67,10 @@ private fun renderLiveSearchData(site: Site) {
         )
     }
     val json = Gson().toJson(repos)
-    GeneratedSummarySiteJson.writeText(json)
+    File("../website/resources/live-search.json").apply {
+        this.parentFile.mkdirs()
+        this.writeText(json)
+    }
 }
 
 private fun renderSite(site: Site) {

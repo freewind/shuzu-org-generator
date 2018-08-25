@@ -5,15 +5,14 @@
         <div>Search in {{demoCount}} complete small demos</div>
         <hr/>
         <ul>
-            <li v-for="demo in demos">{{ demo }}</li>
+            <li v-for="demo in demos">{{ demo.name }}</li>
         </ul>
     </div>
 </template>
 
 <script lang="ts">
     import {Component, Prop, Vue} from 'vue-property-decorator'
-
-    const initDemos = ['Java', 'JavaScript', 'Kotlin', 'Angular', 'Scala']
+    import allDemos from '../resources/live-search.json'
 
     @Component({})
     export default class App extends Vue {
@@ -21,8 +20,8 @@
         demoCount: number = 0
 
         get demos() {
-            return initDemos.filter(demo =>
-                demo.toLocaleLowerCase().includes(this.keyword.trim().toLowerCase()),
+            return allDemos.filter(demo =>
+                demo.name.toLocaleLowerCase().includes(this.keyword.trim().toLowerCase()),
             )
         }
     }

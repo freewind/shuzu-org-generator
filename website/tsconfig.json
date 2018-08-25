@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "module": "esnext",
+    "module": "commonjs",
+    "resolveJsonModule": true,
     "strict": true,
     "jsx": "preserve",
     "importHelpers": true,
@@ -30,6 +31,7 @@
     "src/**/*.ts",
     "src/**/*.tsx",
     "src/**/*.vue",
+    "src/**/*.json",
     "tests/**/*.ts",
     "tests/**/*.tsx"
   ],
