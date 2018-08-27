@@ -9,7 +9,7 @@ function splitByFirst(text: string, keyword: string): undefined | [string, strin
     }
 }
 
-function matchKeyword(strings: string[], keyword: string): boolean {
+function matches(strings: string[], keyword: string): boolean {
     const result = [...strings]
     for (const index in strings) {
         const str = strings[index]
@@ -37,9 +37,44 @@ export function splitKeywords(keyword: string): string[] {
 export function matchesKeywords(text: string, keywords: string[]): boolean {
     const parts = [text.toLowerCase()]
     for (const keyword of keywords) {
-        if (!matchKeyword(parts, keyword)) {
+        if (!matches(parts, keyword)) {
             return false
         }
     }
     return true
+}
+
+type MatchResult = {
+    content: string
+    matched: boolean
+}
+
+function matchKeyword(parts: MatchResult[], keyword: string) {
+    for (const index in parts) {
+        const part = parts[index]
+        if (part.matched) continue
+
+        const split = splitByFirst(part.content, keyword)
+        if (split !== undefined) {
+            const [head, tail] = split
+            const newParts = [
+                {content: head, matched: false},
+                {content: keyword, matched: true},
+                {content: tail, matched: false}
+            ].filter(x => !_.isEmpty(x.content))
+            parts.splice(parseInt(index), 1, ...newParts)
+            return
+        }
+    }
+}
+
+export function matchResult(text: string, keywords: string[]): MatchResult[] {
+    const parts = [{
+        content: text.toLowerCase(),
+        matched: false
+    }]
+    for (const keyword of keywords) {
+        matchKeyword(parts, keyword)
+    }
+    return parts
 }
