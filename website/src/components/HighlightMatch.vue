@@ -9,7 +9,7 @@
     import {matchResult} from '../keywords-matching'
 
     @Component
-    export default class HelloWorld extends Vue {
+    export default class HighlightMatch extends Vue {
         @Prop() private text!: string
         @Prop() private keywords: string[]
 

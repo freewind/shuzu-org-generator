@@ -1,12 +1,17 @@
 <template>
     <div>
         <div>Demo Driven Learning</div>
-        <input type="text" v-model="keyword" autofocus/>
+        <input type="text" v-model="keyword" autofocus
+               v-on:keydown.down="selectNextDemo()"
+               v-on:keydown.up="selectPrevDemo()"
+               v-on:keydown.enter="openDemo()"
+        />
         <div>Search in {{totalDemoCount}} complete small demos</div>
         <hr/>
         <ul>
-            <li v-for="demo in demos" v-bind:key="demo.name">
-                <HighlightMatch v-bind:text="demo.name" v-bind:keywords="keywords"/>
+            <li v-for="demo in filteredDemos" v-bind:key="demo.name"
+                v-bind:class="{ 'selected-demo': demo === currentDemo}">
+                <HighlightMatch v-bind:text="demo.name" v-bind:keywords="standardKeywords"/>
                 <span>{{ demo.description }}</span>
             </li>
         </ul>
@@ -14,10 +19,17 @@
 </template>
 
 <script lang="ts">
-    import {Component, Vue} from 'vue-property-decorator'
-    import allDemos from '../resources/live-search.json'
+    import {Component, Vue, Watch} from 'vue-property-decorator'
+    import _allDemos from '../resources/live-search.json'
     import {matchesKeywords, splitKeywords} from './keywords-matching'
     import HighlightMatch from './components/HighlightMatch'
+
+    type Demo = {
+        name: string,
+        description?: string
+    }
+
+    const allDemos = <Demo[]>_allDemos
 
     @Component({
         components: {
@@ -25,18 +37,73 @@
         }
     })
     export default class App extends Vue {
-        private keyword: string = ''
-        totalDemoCount: number = allDemos.length
+        readonly totalDemoCount: number = allDemos.length
+        keyword: string = ''
 
-        get keywords(): string[] {
-            return splitKeywords(this.keyword)
+        // update when keyword changes
+        standardKeywords: string[] = []
+        filteredDemos: Demo[] = []
+        currentDemo: Demo | null = null
+
+        @Watch('keyword')
+        updateEverything() {
+            this.updateKeywords()
+            this.updateFilteredDemos()
+            this.updateCurrentDemo()
         }
 
-        get demos() {
-            const keywords = this.keywords
-            return keywords.length === 0
-                ? []
-                : allDemos.filter(demo => matchesKeywords(demo.name, keywords))
+        private updateKeywords() {
+            this.standardKeywords = splitKeywords(this.keyword)
+        }
+
+        private updateFilteredDemos() {
+            if (this.standardKeywords.length === 0) {
+                this.filteredDemos = []
+            } else {
+                this.filteredDemos = allDemos.filter(demo => matchesKeywords(demo.name, this.standardKeywords))
+            }
+        }
+
+        private updateCurrentDemo() {
+            if (this.filteredDemos.length > 0) {
+                this.currentDemo = this.filteredDemos[0]
+            } else {
+                this.currentDemo = null
+            }
+        }
+
+        selectNextDemo() {
+            if (this.currentDemo !== null) {
+                let index = this.filteredDemos.indexOf(this.currentDemo) + 1
+                if (index >= this.filteredDemos.length) {
+                    index = 0
+                }
+                this.currentDemo = this.filteredDemos[index]
+            }
+        }
+
+        selectPrevDemo() {
+            if (this.currentDemo !== null) {
+                const demos = this.filteredDemos
+                let index = this.filteredDemos.indexOf(this.currentDemo) - 1
+                if (index < 0) {
+                    index = demos.length - 1
+                }
+                this.currentDemo = demos[index]
+            }
+        }
+
+        openDemo() {
+            if (this.currentDemo !== null) {
+                const url = 'https://github.com/freewind-demos/' + this.currentDemo.name
+                window.open(url)
+            }
         }
     }
 </script>
+
+<style scoped>
+    .selected-demo {
+        background-color: #DDD;
+    }
+</style>
