@@ -1,7 +1,9 @@
 package org.shuzu.generator
 
+import org.eclipse.egit.github.core.client.GitHubClient
 import org.eclipse.egit.github.core.service.RepositoryService
 import org.shuzu.generator.github.getTopics
+import java.io.File
 
 fun main(args: Array<String>) {
     println(fetchGithub())
@@ -12,7 +14,10 @@ fun fetchGithub(): Site {
 }
 
 private fun fetchOrgRepos(orgName: String): List<Repository> {
-    val service = RepositoryService()
+    val service = run {
+        val client = GitHubClient().setOAuth2Token(readGithubToken())
+        RepositoryService(client)
+    }
     return service.getRepositories(orgName)
             .filterNot { it.isPrivate }
             .map { repo ->
@@ -21,4 +26,8 @@ private fun fetchOrgRepos(orgName: String): List<Repository> {
                         topics = emptyList() // getTopics(orgName, repo.name)
                 )
             }
+}
+
+fun readGithubToken(): String {
+    return File("./github-token.txt").readText()
 }
