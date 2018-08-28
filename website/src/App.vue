@@ -1,20 +1,21 @@
 <template>
-    <div>
-        <div>Demo Driven Learning</div>
-        <input type="text" v-model="keyword" autofocus
-               v-on:keydown.down="selectNextDemo()"
-               v-on:keydown.up="selectPrevDemo()"
-               v-on:keydown.enter="openDemo()"
-        />
-        <div>Search in {{totalDemoCount}} complete small demos</div>
-        <hr/>
-        <ul>
-            <li v-for="demo in filteredDemos" v-bind:key="demo.name"
-                v-bind:class="{ 'selected-demo': demo === currentDemo}">
-                <HighlightMatch v-bind:text="demo.name" v-bind:keywords="standardKeywords"/>
-                <span>{{ demo.description }}</span>
-            </li>
-        </ul>
+    <div class="live-search">
+        <div class="search-input">
+            <input type="text" v-model="keyword" autofocus
+                   v-on:keydown.down="selectNextDemo()"
+                   v-on:keydown.up="selectPrevDemo()"
+                   v-on:keydown.enter="openDemo()"
+            />
+        </div>
+        <div class="search-tips">Search in {{totalDemoCount}} small but complete demos</div>
+        <div class="filtered-demos">
+            <ul>
+                <li v-for="demo in filteredDemos" v-bind:key="demo.name"
+                    v-bind:class="{ 'selected-demo': demo === currentDemo}">
+                    <HighlightMatch v-bind:text="demo.name" v-bind:keywords="standardKeywords"/>
+                </li>
+            </ul>
+        </div>
     </div>
 </template>
 
@@ -103,6 +104,32 @@
 </script>
 
 <style scoped>
+    .live-search {
+        text-align: center;
+        padding: 20px;
+    }
+
+    .search-input input {
+        width: 60%;
+        height: 80px;
+        font-size: 50px;
+        border: 3px solid #22863a;
+        color: #735c0f;
+        padding: 10px;
+    }
+
+    .search-tips {
+        font-size: 20px;
+        padding: 10px;
+    }
+
+    .filtered-demos li {
+        list-style: none;
+        font-size: 24px;
+        padding: 5px;
+        text-align: left;
+    }
+
     .selected-demo {
         background-color: #DDD;
     }
