@@ -8,10 +8,7 @@ fun main(args: Array<String>) {
 }
 
 fun fetchGithub(): Site {
-    return Site(
-            githubOrgUrl = "https://github.com/freewind-demos",
-            repos = fetchOrgRepos("freewind-demos")
-    )
+    return Site(fetchOrgRepos("freewind-demos"))
 }
 
 private fun fetchOrgRepos(orgName: String): List<Repository> {

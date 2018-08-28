@@ -3,6 +3,7 @@ package org.shuzu.generator
 import com.google.gson.Gson
 import com.mitchellbosecke.pebble.PebbleEngine
 import com.mitchellbosecke.pebble.loader.FileLoader
+import org.apache.commons.io.FileUtils
 import java.io.File
 import java.io.StringWriter
 import java.nio.file.Paths
@@ -40,6 +41,7 @@ object DataGenerator {
         renderLiveSearchData(site)
         clearSiteDir()
         renderDemoPages(site)
+        copyDemoImages(site)
         copySiteFiles()
     }
 
@@ -84,7 +86,7 @@ private fun renderLiveSearchData(site: Site) {
 private fun renderDemoPages(site: Site) {
     val loader = FileLoader()
     val engine = PebbleEngine.Builder().loader(loader).strictVariables(true).build()
-    val template = engine.getTemplate("./website/public/demos/_demo_.html")
+    val template = engine.getTemplate("./website/public/demos/_demo_/index.html")
 
     site.repos.forEach { repo ->
         val writer = StringWriter()
@@ -93,11 +95,24 @@ private fun renderDemoPages(site: Site) {
         }
         template.evaluate(writer, context)
         val output = writer.toString()
-        File("./cache/site/demos/${repo.name}.html").apply {
+        File("./cache/site/demos/${repo.name}/index.html").apply {
             this.parentFile.mkdirs()
             writeText(output)
         }.also {
             println("write to demo: $it")
+        }
+    }
+}
+
+private fun copyDemoImages(site: Site) {
+    site.repos.forEach { repo ->
+        val repoDir = File(LocalReposRoot, repo.name)
+        val imageDir = File(repoDir, "images")
+        if (imageDir.exists()) {
+            val targetDir = File("./cache/site/demos/${repo.name}/images")
+            imageDir.copyRecursively(targetDir, overwrite = true).also {
+                println("copied images from $imageDir to $targetDir")
+            }
         }
     }
 }
@@ -112,7 +127,7 @@ private fun copySiteFiles() {
 private fun calcSiteData(): Site {
     val site = readCachedGithubData()
     return Site(repos = site.repos.map { repo ->
-        val files = readCodeFiles(site, repo)
+        val files = readCodeFiles(repo)
         val readme = files.find { it.name.toLowerCase() == "readme.md" }
         val codeFiles = files.filterNot { it == readme }
         repo.copy(readmeFile = readme, codeFiles = codeFiles)
@@ -124,8 +139,8 @@ private fun readCachedGithubData(): Site {
     return Gson().fromJson(json, Site::class.java)!!
 }
 
-private fun readCodeFiles(site: Site, repo: Repository): List<ProjectFile> {
-    val dir = File(LocalReposRoot, "${site.name}/${repo.name}")
+private fun readCodeFiles(repo: Repository): List<ProjectFile> {
+    val dir = File(LocalReposRoot, repo.name)
     val files = dir.walkTopDown().filter { file ->
         file.isFile && hasExpectedExtension(file) && !inExcludedDirs(file)
     }

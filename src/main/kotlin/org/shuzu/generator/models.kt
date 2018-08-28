@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package org.shuzu.generator
 
 data class SimpleRepo(
@@ -27,19 +29,9 @@ data class Repository(
 ) {
     val issuesUrl = "$githubUrl/issues?q="
     val cloneUrl = githubUrl
-    fun fileUrl(file: ProjectFile): String = "$githubUrl/blob/master/${file.path}"
 }
 
+// Keep this `Site` class just to make using Gson easier in Kotlin
 data class Site(
-        val name: String = "数组网",
-        val url: String = "http://shuzu.org",
-        val githubOrgUrl: String = "https://github.com/freewind-demos",
         val repos: List<Repository>
-) {
-    val demoCount = repos.size
-}
-
-object SitePaths {
-    //    fun orgPath(org: Organization): String = "orgs/${org.name}/index.html"
-    fun repoPath(repo: Repository): String = "demos/${repo.name}.html"
-}
+)

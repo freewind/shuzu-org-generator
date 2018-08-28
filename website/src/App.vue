@@ -95,7 +95,7 @@
 
         openDemo() {
             if (this.currentDemo !== null) {
-                const url = '/demos/' + this.currentDemo.name + '.html'
+                const url = '/demos/' + this.currentDemo.name + '/index.html'
                 window.open(url)
             }
         }
