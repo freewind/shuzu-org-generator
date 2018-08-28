@@ -1,5 +1,7 @@
-let tags = document.getElementsByClassName("markdown")
-for (let i = 0; i < tags.length; i++) {
+var tags = document.getElementsByClassName("markdown")
+var converter = new showdown.Converter();
+
+for (var i = 0; i < tags.length; i++) {
     let tag = tags[i];
-    tag.innerHTML = markdown.toHTML(tag.innerHTML)
+    tag.innerHTML = converter.makeHtml(tag.innerHTML)
 }
