@@ -29,5 +29,5 @@ private fun fetchOrgRepos(orgName: String): List<Repository> {
 }
 
 fun readGithubToken(): String {
-    return File("./github-token.txt").readText()
+    return File("./github-token.txt").readText().trim()
 }
