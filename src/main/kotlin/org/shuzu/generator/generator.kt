@@ -1,10 +1,11 @@
 package org.shuzu.generator
 
 import com.google.gson.Gson
+import com.mitchellbosecke.pebble.PebbleEngine
+import com.mitchellbosecke.pebble.loader.FileLoader
 import org.apache.commons.io.FileUtils
-import org.shuzu.generator.templates.indexPage
-import org.shuzu.generator.templates.repoPage
 import java.io.File
+import java.io.StringWriter
 import java.nio.file.Paths
 
 object DoAll {
@@ -38,17 +39,24 @@ object DataGenerator {
     fun main(args: Array<String>) {
         val site = calcSiteData()
         renderLiveSearchData(site)
-        renderSite(site)
+        clearSiteDir()
+        renderDemoPages(site)
         copySiteFiles()
+    }
+
+    private fun clearSiteDir() {
+        SiteRoot.walkBottomUp().onLeave { file ->
+            if (file.name != ".gitkeep") {
+                file.delete()
+            }
+        }
     }
 
 }
 
-private val userHome = System.getProperty("user.home")
-private val LocalRoot = File(userHome, "tmp/shuzu-org-generator").also { FileUtils.forceMkdir(it) }
-private val LocalReposRoot = File(LocalRoot, "repos").also { if (!it.exists()) it.mkdirs() }
-private val SiteRoot = File(LocalRoot, "site").also { if (!it.exists()) it.mkdirs() }
-private val GithubReposInfoFile = File(LocalRoot, "github-repos.json")
+private val LocalReposRoot = File("./cache/repos")
+private val SiteRoot = File("./cache/site")
+private val GithubReposInfoFile = File("./cache/github-repos.json")
 
 private fun saveToLocalFile(site: Site) {
     val json = Gson().toJson(site)
@@ -67,26 +75,39 @@ private fun renderLiveSearchData(site: Site) {
         )
     }
     val json = Gson().toJson(repos)
-    File("../website/resources/live-search.json").apply {
-        this.parentFile.mkdirs()
+    File("./website/resources/live-search.json").apply {
         this.writeText(json)
+    }.also {
+        println("write to file: $it")
     }
 }
 
-private fun renderSite(site: Site) {
-    indexPage(site)
+private fun renderDemoPages(site: Site) {
+    val loader = FileLoader()
+    val engine = PebbleEngine.Builder().loader(loader).strictVariables(true).build()
+    val template = engine.getTemplate("./website/public/demos/_demo_.html")
+
     site.repos.forEach { repo ->
-        repoPage(site, repo).let { content ->
-            with(File(SiteRoot, SitePaths.repoPath(repo))) {
-                FileUtils.forceMkdirParent(this)
-                writeText(content)
-            }
+        val writer = StringWriter()
+        val context = HashMap<String, Any>().apply {
+            this["demo"] = repo
+        }
+        template.evaluate(writer, context)
+        val output = writer.toString()
+        File("./cache/site/demos/${repo.name}.html").apply {
+            this.parentFile.mkdirs()
+            writeText(output)
+        }.also {
+            println("write to demo: $it")
         }
     }
 }
 
 private fun copySiteFiles() {
-    File("src/main/resources/site-files").copyRecursively(SiteRoot, overwrite = true)
+    File("./website/dist/").apply {
+        this.copyRecursively(SiteRoot, overwrite = true)
+        println("copied site files from $this to $SiteRoot")
+    }
 }
 
 private fun calcSiteData(): Site {
@@ -104,14 +125,15 @@ private fun readCachedGithubData(): Site {
     return Gson().fromJson(json, Site::class.java)!!
 }
 
-private fun readCodeFiles(org: Site, repo: Repository): List<ProjectFile> {
-    val dir = File(LocalReposRoot, "${org.name}/${repo.name}")
+private fun readCodeFiles(site: Site, repo: Repository): List<ProjectFile> {
+    val dir = File(LocalReposRoot, "${site.name}/${repo.name}")
     val files = dir.walkTopDown().filter { file ->
         file.isFile && hasExpectedExtension(file) && !inExcludedDirs(file)
-    }.map { file ->
-        ProjectFile(file.name, relativePath(file, dir), file.readText())
+    }
+    val projectFiles = files.map { file ->
+        ProjectFile(repo, file.name, relativePath(file, dir), file.readText())
     }.toList()
-    return files
+    return projectFiles
 }
 
 private fun relativePath(file: File, base: File): String {

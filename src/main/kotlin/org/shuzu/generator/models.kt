@@ -8,11 +8,13 @@ data class SimpleRepo(
 )
 
 data class ProjectFile(
+        @Transient val repo: Repository,
         val name: String,
         val path: String,
         val content: String
 ) {
     val language: String = name.substringAfterLast(".")
+    val githubUrl: String = "https://github.com/freewind-demos/${repo.name}/blob/master/$path"
 }
 
 data class Repository(

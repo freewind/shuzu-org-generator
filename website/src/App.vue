@@ -95,7 +95,7 @@
 
         openDemo() {
             if (this.currentDemo !== null) {
-                const url = 'https://github.com/freewind-demos/' + this.currentDemo.name
+                const url = '/demos/' + this.currentDemo.name + '.html'
                 window.open(url)
             }
         }

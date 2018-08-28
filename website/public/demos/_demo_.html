@@ -1,0 +1,50 @@
+<html>
+<head>
+    <title>{{ demo.name }} - 数组网</title>
+    <link rel="stylesheet" href="../css/site.css">
+    <script src="../js/less-3.8.0.min.js"></script>
+    <link rel="stylesheet" href="../css/github-markdown-2.10.0.css">
+    <script src="../js/markdown-0.5.0.js"></script>
+</head>
+<body>
+
+<div id="demo-header">
+    <div class="site-slogan">{{ demo.name }}</div>
+</div>
+
+{% if demo.readmeFile != null %}
+<div id="readme" class="center-in-page">
+    <div class="markdown markdown-body">
+        {{ demo.readmeFile.content }}
+    </div>
+</div>
+{% endif %}
+
+{% for codeFile in demo.codeFiles %}
+<div class="code-file center-in-page panel markdown-body">
+    <div class="header">
+        <div class="name">
+            <a href="{{ codeFile.githubUrl }}" target="_blank">{{ codeFile.name }}</a>
+        </div>
+        <div class="path">{{ codeFile.path }}</div>
+    </div>
+    <div class="body">
+        <pre class="content"><code class="js">{{ codeFile.content }}</code></pre>
+    </div>
+</div>
+{% endfor %}
+
+<div class="github center-in-page markdown-body">
+    <span class="github-icon"><img src="../images/github.jpg"></span>
+    <span class="repo-url">
+        <a href="{{ demo.githubUrl }}">打开Github项目地址</a>
+    </span>
+    <span class="repo-issues">
+        <a href="{{ demo.issuesUrl }}">有问题上Github Issues上讨论</a>
+    </span>
+</div>
+
+<script src="../js/site.js"></script>
+<script type="javascript" src="https://s13.cnzz.com/z_stat.php?id=1274292847&amp;web_id=1274292847"></script>
+</body>
+</html>

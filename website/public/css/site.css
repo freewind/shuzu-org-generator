@@ -8,7 +8,7 @@ a {
 a:hover {
   text-decoration: underline;
 }
-#main {
+.center-in-page {
   max-width: 960px;
   margin: 0 auto;
 }
@@ -26,6 +26,12 @@ a:hover {
   font-size: 50px;
   line-height: 100px;
 }
+#demo-header {
+  font-size: 40px;
+  line-height: 80px;
+  text-align: center;
+  background-color: #EEEEEE;
+}
 .panel {
   margin-top: 16px;
   margin-bottom: 16px;
@@ -42,53 +48,41 @@ a:hover {
 .panel .body {
   font-size: 16px;
 }
-#index-main .org .body,
-#org-main .org .body {
-  padding: 20px;
-}
-#index-main .org .org-name,
-#org-main .org .org-name {
-  font-size: 28px;
-}
-#index-main .org .org-name a,
-#org-main .org .org-name a {
-  color: #004AC0;
-}
-.navigation {
+#navigation {
   font-size: 16px;
   line-height: 40px;
 }
-.navigation .repo-description {
+#navigation .repo-description {
   display: inline;
 }
-#repo-main .code-file .header {
+.code-file .header {
   padding-top: 10px;
   padding-bottom: 10px;
 }
-#repo-main .code-file .header .name {
+.code-file .header .name {
   line-height: 40px;
 }
-#repo-main .code-file .header .path {
+.code-file .header .path {
   font-size: 14px;
   color: #CCC;
   font-weight: normal;
   line-height: 30px;
 }
-#repo-main .code-file .content {
+.code-file .content {
   margin-bottom: 0;
 }
-#repo-main .github {
+.github {
   padding: 20px 0;
   font-size: 16px;
 }
-#repo-main .github .github-icon img {
+.github .github-icon img {
   height: 20px;
 }
-#repo-main .github .repo-url {
+.github .repo-url {
   padding-left: 15px;
   line-height: 20px;
 }
-#repo-main .github .repo-issues {
+.github .repo-issues {
   padding-left: 15px;
   line-height: 20px;
 }
