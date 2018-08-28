@@ -195,7 +195,7 @@ private fun cloneOrPullRepos(site: Site) {
 }
 
 private fun deleteNonExistLocalRepos(site: Site) {
-    for (repoDir in LocalReposRoot.listFiles()) {
+    for (repoDir in LocalReposRoot.listFiles().filter { it.isDirectory }) {
         if (!repoExistsOnGithub(site, repoDir)) {
             println("delete not exist repo: $repoDir")
             repoDir.deleteRecursively()
