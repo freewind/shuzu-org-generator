@@ -3,7 +3,6 @@ package org.shuzu.generator
 import com.google.gson.Gson
 import com.mitchellbosecke.pebble.PebbleEngine
 import com.mitchellbosecke.pebble.loader.FileLoader
-import org.apache.commons.io.FileUtils
 import java.io.File
 import java.io.StringWriter
 import java.nio.file.Paths

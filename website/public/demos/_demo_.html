@@ -2,9 +2,8 @@
 <head>
     <title>{{ demo.name }} - 数组网</title>
     <link rel="stylesheet" href="../css/site.css">
-    <script src="../js/less-3.8.0.min.js"></script>
     <link rel="stylesheet" href="../css/github-markdown-2.10.0.css">
-    <script src="../js/markdown-0.5.0.js"></script>
+    <script src="../js/showdown-1.8.6.min.js"></script>
 </head>
 <body>
 
@@ -29,7 +28,7 @@
         <div class="path">{{ codeFile.path }}</div>
     </div>
     <div class="body">
-        <pre class="content"><code class="js">{{ codeFile.content }}</code></pre>
+        <pre class="content"><code class="{{ codeFile.language }}">{{ codeFile.content }}</code></pre>
     </div>
 </div>
 {% endfor %}
