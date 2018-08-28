@@ -17,6 +17,8 @@ private fun fetchOrgRepos(orgName: String): List<Repository> {
             .filterNot { it.isPrivate }
             .map { repo ->
                 println("repo: ${repo.owner.login} / ${repo.name}")
-                Repository(repo.name, repo.htmlUrl, repo.description, getTopics(orgName, repo.name))
+                Repository(repo.name, repo.htmlUrl, repo.description,
+                        topics = emptyList() // getTopics(orgName, repo.name)
+                )
             }
 }
