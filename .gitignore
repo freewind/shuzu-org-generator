@@ -3,3 +3,4 @@ out/
 local.properties
 github-token.txt
 dist/
+cache/
