@@ -39,7 +39,7 @@ object DataGenerator {
         val site = calcSiteData()
         renderLiveSearchData(site)
         renderSite(site)
-//        copySiteFiles()
+        copySiteFiles()
     }
 
 }
@@ -86,7 +86,6 @@ private fun renderSite(site: Site) {
 }
 
 private fun copySiteFiles() {
-//    val targetDir = File(SiteRoot, "site-files")
     File("src/main/resources/site-files").copyRecursively(SiteRoot, overwrite = true)
 }
 

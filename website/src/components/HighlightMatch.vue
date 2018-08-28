@@ -11,7 +11,7 @@
     @Component
     export default class HighlightMatch extends Vue {
         @Prop() private text!: string
-        @Prop() private keywords: string[]
+        @Prop() private keywords!: string[]
 
         get parts() {
             return matchResult(this.text, this.keywords)

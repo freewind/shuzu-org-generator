@@ -22,7 +22,7 @@
     import {Component, Vue, Watch} from 'vue-property-decorator'
     import _allDemos from '../resources/live-search.json'
     import {matchesKeywords, splitKeywords} from './keywords-matching'
-    import HighlightMatch from './components/HighlightMatch'
+    import HighlightMatch from './components/HighlightMatch.vue'
 
     type Demo = {
         name: string,
