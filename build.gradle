@@ -31,8 +31,8 @@ task SyncLocalRepos(type: JavaExec, dependsOn: classes) {
     classpath = sourceSets.main.runtimeClasspath
 }
 
-task DataGenerator(type: JavaExec, dependsOn: classes) {
-    main = "org.shuzu.generator.DataGenerator"
+task SiteGenerator(type: JavaExec, dependsOn: classes) {
+    main = "org.shuzu.generator.SiteGenerator"
     classpath = sourceSets.main.runtimeClasspath
 }
 

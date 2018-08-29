@@ -3,7 +3,6 @@ package org.shuzu.generator
 import com.google.gson.Gson
 import com.mitchellbosecke.pebble.PebbleEngine
 import com.mitchellbosecke.pebble.loader.FileLoader
-import org.apache.commons.io.FileUtils
 import java.io.File
 import java.io.StringWriter
 import java.nio.file.Paths
@@ -13,7 +12,7 @@ object DoAll {
     fun main(args: Array<String>) {
         FetchGithubData.main(args)
         SyncLocalRepos.main(args)
-        DataGenerator.main(args)
+        SiteGenerator.main(args)
     }
 }
 
@@ -34,7 +33,7 @@ object SyncLocalRepos {
     }
 }
 
-object DataGenerator {
+object SiteGenerator {
     @JvmStatic
     fun main(args: Array<String>) {
         val site = calcSiteData()

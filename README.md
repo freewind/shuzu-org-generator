@@ -13,7 +13,7 @@ Then choose any of:
 
 - `./gradlew FetchGithubData`
 - `./gradlew SyncLocalRepos`
-- `./gradlew DataGenerator`
+- `./gradlew SiteGenerator`
 
 View local site:
 
