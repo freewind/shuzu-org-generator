@@ -159,7 +159,7 @@ fun inExcludedDirs(file: File): Boolean {
 
 fun hasExpectedExtension(file: File): Boolean {
     val extensions = listOf("java", "kt", "scala",
-            "html", "js", "ts", "css", "less",
+            "html", "js", "json", "ts", "css", "less",
             "go", "hx", "py", "rb",
             "xml", "gradle", "sql", "txt", "md")
     return extensions.contains(file.extension.toLowerCase())
