@@ -12,7 +12,9 @@
             <ul>
                 <li v-for="demo in filteredDemos" v-bind:key="demo.name"
                     v-bind:class="{ 'selected-demo': demo === currentDemo}">
-                    <HighlightMatch v-bind:text="demo.name" v-bind:keywords="standardKeywords"/>
+                    <a v-bind:href="demoPath(demo)" target="_blank">
+                        <HighlightMatch v-bind:text="demo.name" v-bind:keywords="standardKeywords"/>
+                    </a>
                 </li>
             </ul>
         </div>
@@ -96,9 +98,13 @@
 
         openDemo() {
             if (this.currentDemo !== null) {
-                const url = '/demos/' + this.currentDemo.name + '/index.html'
+                const url = this.demoPath(this.currentDemo)
                 window.open(url)
             }
+        }
+
+        demoPath(demo: Demo): string {
+            return '/demos/' + demo.name + '/index.html'
         }
     }
 </script>

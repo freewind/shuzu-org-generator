@@ -23,3 +23,4 @@ cd cache/site/
 http-server . -c-1 -o
 ```
 
+If everything is OK, push `cache/site` to shuzu.org

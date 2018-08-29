@@ -46,11 +46,8 @@ object DataGenerator {
     }
 
     private fun clearSiteDir() {
-        SiteRoot.walkBottomUp().onLeave { file ->
-            if (file.name != ".gitkeep") {
-                file.delete()
-            }
-        }
+        fun keep(file: File) = file.name.startsWith(".") || file.name == "CNAME" || file.name == "README.md"
+        SiteRoot.listFiles().filterNot { keep(it) }.forEach { it.deleteRecursively() }
     }
 
 }
