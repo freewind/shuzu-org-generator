@@ -138,12 +138,16 @@ private fun readCachedGithubData(): Site {
 private fun readCodeFiles(repo: Repository): List<ProjectFile> {
     val dir = File(LocalReposRoot, repo.name)
     val files = dir.walkTopDown().filter { file ->
-        file.isFile && hasExpectedExtension(file) && !inExcludedDirs(file)
+        file.isFile && hasExpectedExtension(file) && !inExcludedDirs(file) && !isExcludeFiles(file)
     }
     val projectFiles = files.map { file ->
         ProjectFile(repo, file.name, relativePath(file, dir), file.readText())
     }.toList()
     return projectFiles
+}
+
+fun isExcludeFiles(file: File): Boolean {
+    return file.name == "package-lock.json"
 }
 
 private fun relativePath(file: File, base: File): String {
