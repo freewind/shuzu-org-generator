@@ -20,6 +20,11 @@
 {% endif %}
 
 {% for codeFile in demo.codeFiles %}
+    {% if codeFile.language == "md" %}
+<div class="markdown markdown-body center-in-page">
+    {{ codeFile.content }}
+</div>
+    {% else %}
 <div class="code-file center-in-page panel markdown-body">
     <div class="header">
         <div class="name">
@@ -31,6 +36,7 @@
         <pre class="content"><code class="{{ codeFile.language }}">{{ codeFile.content }}</code></pre>
     </div>
 </div>
+    {% endif %}
 {% endfor %}
 
 <div class="github center-in-page markdown-body">
