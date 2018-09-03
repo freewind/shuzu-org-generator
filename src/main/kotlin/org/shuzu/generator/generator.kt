@@ -5,13 +5,17 @@ import com.mitchellbosecke.pebble.PebbleEngine
 import com.mitchellbosecke.pebble.loader.FileLoader
 import java.io.File
 import java.io.StringWriter
+import java.lang.ProcessBuilder.*
 import java.nio.file.Paths
+import java.util.concurrent.TimeUnit
 
 object DoAll {
     @JvmStatic
     fun main(args: Array<String>) {
         FetchGithubData.main(args)
         SyncLocalRepos.main(args)
+        RenderLiveSearchData.main(args)
+        BuildWebsiteProject.main(args)
         SiteGenerator.main(args)
     }
 }
@@ -33,11 +37,36 @@ object SyncLocalRepos {
     }
 }
 
-object SiteGenerator {
+object RenderLiveSearchData {
     @JvmStatic
     fun main(args: Array<String>) {
         val site = calcSiteData()
         renderLiveSearchData(site)
+    }
+}
+
+object BuildWebsiteProject {
+    @JvmStatic
+    fun main(args: Array<String>) {
+        runCommand(File("./website"), "npm install")
+        runCommand(File("./website"), "npm run build")
+    }
+
+    private fun runCommand(workingDir: File, command: String) {
+        val parts = command.split("\\s".toRegex())
+        ProcessBuilder(*parts.toTypedArray())
+                .directory(workingDir)
+                .redirectOutput(Redirect.INHERIT)
+                .redirectError(Redirect.INHERIT)
+                .start()
+                .waitFor(60, TimeUnit.MINUTES)
+    }
+}
+
+object SiteGenerator {
+    @JvmStatic
+    fun main(args: Array<String>) {
+        val site = calcSiteData()
         clearSiteDir()
         renderDemoPages(site)
         copyDemoImages(site)

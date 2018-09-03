@@ -31,6 +31,16 @@ task SyncLocalRepos(type: JavaExec, dependsOn: classes) {
     classpath = sourceSets.main.runtimeClasspath
 }
 
+task RenderLiveSearchData(type: JavaExec, dependsOn: classes) {
+    main = "org.shuzu.generator.RenderLiveSearchData"
+    classpath = sourceSets.main.runtimeClasspath
+}
+
+task BuildWebsiteProject(type: JavaExec, dependsOn: classes) {
+    main = "org.shuzu.generator.BuildWebsiteProject"
+    classpath = sourceSets.main.runtimeClasspath
+}
+
 task SiteGenerator(type: JavaExec, dependsOn: classes) {
     main = "org.shuzu.generator.SiteGenerator"
     classpath = sourceSets.main.runtimeClasspath
