@@ -13,6 +13,8 @@ Then choose any of:
 
 - `./gradlew FetchGithubData`
 - `./gradlew SyncLocalRepos`
+- `./gradlew RenderLiveSearchData`
+- `./gradlew BuildWebsiteProject`
 - `./gradlew SiteGenerator`
 
 View local site:
