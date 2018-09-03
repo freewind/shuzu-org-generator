@@ -54,6 +54,7 @@ repositories {
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile "org.jetbrains.kotlinx:kotlinx-html-jvm:0.6.11"
+    compile 'com.github.dfabulich:sitemapgen4j:1.1.1'
     compile 'com.google.code.gson:gson:2.8.5'
     compile 'com.github.kittinunf.fuel:fuel:1.13.0'
     compile 'org.eclipse.jgit:org.eclipse.jgit:5.0.1.201806211838-r'

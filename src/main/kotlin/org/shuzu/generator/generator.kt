@@ -3,6 +3,8 @@ package org.shuzu.generator
 import com.google.gson.Gson
 import com.mitchellbosecke.pebble.PebbleEngine
 import com.mitchellbosecke.pebble.loader.FileLoader
+import com.redfin.sitemapgenerator.WebSitemapGenerator
+import com.redfin.sitemapgenerator.WebSitemapUrl
 import java.io.File
 import java.io.StringWriter
 import java.lang.ProcessBuilder.*
@@ -71,6 +73,7 @@ object SiteGenerator {
         renderDemoPages(site)
         copyDemoImages(site)
         copySiteFiles()
+        generateSiteMap(site)
     }
 
     private fun clearSiteDir() {
@@ -87,6 +90,18 @@ private val GithubReposInfoFile = File("./cache/github-repos.json")
 private fun saveToLocalFile(site: Site) {
     val json = Gson().toJson(site)
     GithubReposInfoFile.writeText(json)
+}
+
+private fun generateSiteMap(site: Site) {
+    val domain = "http://shuzu.org"
+    val wsg = WebSitemapGenerator.builder(domain, SiteRoot)
+            .autoValidate(true)
+            .build()
+    site.repos.forEach { repo ->
+        wsg.addUrl(domain + repoIndexPagePath(repo))
+    }
+    wsg.write()
+    println("wrote sitemap: " + File(SiteRoot, "sitemap.xml"))
 }
 
 private fun renderLiveSearchData(site: Site) {
@@ -120,7 +135,7 @@ private fun renderDemoPages(site: Site) {
         }
         template.evaluate(writer, context)
         val output = writer.toString()
-        File("./cache/site/demos/${repo.name}/index.html").apply {
+        File(SiteRoot, repoIndexPagePath(repo)).apply {
             this.parentFile.mkdirs()
             writeText(output)
         }.also {
@@ -128,6 +143,8 @@ private fun renderDemoPages(site: Site) {
         }
     }
 }
+
+private fun repoIndexPagePath(repo: Repository) = "/demos/${repo.name}/index.html"
 
 private fun copyDemoImages(site: Site) {
     site.repos.forEach { repo ->
