@@ -184,7 +184,7 @@ private fun readCachedGithubData(): Site {
 private fun readCodeFiles(repo: Repository): List<ProjectFile> {
     val dir = File(LocalReposRoot, repo.name)
     val files = dir.walkTopDown().filter { file ->
-        file.isFile && hasExpectedExtension(file) && !inExcludedDirs(file) && !isExcludeFiles(file)
+        file.isFile && !inExcludedDirs(file) && !isExcludeFiles(file)
     }
     val projectFiles = files.map { file ->
         ProjectFile(repo, file.name, relativePath(file, dir), file.readText())
@@ -193,7 +193,7 @@ private fun readCodeFiles(repo: Repository): List<ProjectFile> {
 }
 
 fun isExcludeFiles(file: File): Boolean {
-    return file.name == "package-lock.json"
+    return listOf("package-lock.json", ".gitignore", "gradlew", "gradlew.bat").contains(file.name)
 }
 
 private fun relativePath(file: File, base: File): String {
@@ -205,14 +205,6 @@ private fun relativePath(file: File, base: File): String {
 fun inExcludedDirs(file: File): Boolean {
     val excludeDirs = listOf(".git", ".gradle", "gradle", ".idea")
     return excludeDirs.any { dir -> file.path.contains("/$dir/") }
-}
-
-fun hasExpectedExtension(file: File): Boolean {
-    val extensions = listOf("java", "kt", "scala",
-            "html", "js", "json", "ts", "css", "less",
-            "go", "hx", "py", "rb",
-            "xml", "gradle", "sql", "txt", "md", "yml")
-    return extensions.contains(file.extension.toLowerCase())
 }
 
 private fun cloneOrPullRepos(site: Site) {
