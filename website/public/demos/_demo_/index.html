@@ -36,10 +36,10 @@
 {% else %}
 <div class="code-file center-in-page panel markdown-body">
     <div class="header">
-        <div class="name">
+        <span class="parent-dirs">{{ codeFile.parentDirs }}</span>
+        <span class="name">
             <a href="{{ codeFile.githubUrl }}" target="_blank" title="show github file">{{ codeFile.name }}</a>
-        </div>
-        <div class="path">{{ codeFile.path }}</div>
+        </span>
     </div>
     <div class="body">
         <pre class="content"><code class="{{ codeFile.language }}">{{ codeFile.content }}</code></pre>
@@ -60,6 +60,7 @@
 <script src="../../js/site.js"></script>
 <script type="text/javascript">
     var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1274292847'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s13.cnzz.com/z_stat.php%3Fid%3D1274292847' type='text/javascript'%3E%3C/script%3E"));
+
 </script>
 </body>
 </html>
