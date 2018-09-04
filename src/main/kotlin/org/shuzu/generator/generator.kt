@@ -129,8 +129,9 @@ private fun renderDemoPages(site: Site) {
     val template = engine.getTemplate("./website/public/demos/_demo_/index.html")
 
     site.repos.forEach { repo ->
-        println("-------------- repo.name -----------------")
-        println(repo)
+        println("-------------- ${repo.name} code files -----------------")
+        println(repo.codeFiles.map { it.name })
+        
         val writer = StringWriter()
         val context = HashMap<String, Any>().apply {
             this["demo"] = repo
