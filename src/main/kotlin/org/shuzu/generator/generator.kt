@@ -131,7 +131,7 @@ private fun renderDemoPages(site: Site) {
     site.repos.forEach { repo ->
         println("-------------- ${repo.name} code files -----------------")
         println(repo.codeFiles.map { it.name })
-        
+
         val writer = StringWriter()
         val context = HashMap<String, Any>().apply {
             this["demo"] = repo
@@ -197,7 +197,7 @@ private fun readCodeFiles(repo: Repository): List<ProjectFile> {
 
 fun isExcludeFiles(file: File): Boolean {
     val excludeFiles = listOf("package-lock.json", ".gitignore", ".keep", ".gitkeep", "gradlew", "gradlew.bat")
-    val excludeExtensions = listOf("jar")
+    val excludeExtensions = listOf("jar", "gz", "tar", "zip")
     return excludeFiles.contains(file.name) || excludeExtensions.contains(file.extension)
 }
 
