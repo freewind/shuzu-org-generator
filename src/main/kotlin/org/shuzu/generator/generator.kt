@@ -129,20 +129,24 @@ private fun renderDemoPages(site: Site) {
     val template = engine.getTemplate("./website/public/demos/_demo_/index.html")
 
     site.repos.forEach { repo ->
-        println("-------------- ${repo.name} code files -----------------")
-        println(repo.codeFiles.map { it.name })
-
-        val writer = StringWriter()
-        val context = HashMap<String, Any>().apply {
-            this["demo"] = repo
-        }
-        template.evaluate(writer, context)
-        val output = writer.toString()
-        File(SiteRoot, repoIndexPagePath(repo)).apply {
-            this.parentFile.mkdirs()
-            writeText(output)
-        }.also {
-            println("write to demo: $it")
+        try {
+            val writer = StringWriter()
+            val context = HashMap<String, Any>().apply {
+                this["demo"] = repo
+            }
+            template.evaluate(writer, context)
+            val output = writer.toString()
+            File(SiteRoot, repoIndexPagePath(repo)).apply {
+                this.parentFile.mkdirs()
+                writeText(output)
+            }.also {
+                println("write to demo: $it")
+            }
+        } catch (e: Exception) {
+            println("-------------- Exception: ${repo.name} -----------------")
+            println(repo.codeFiles.map { it.name })
+            println("--------------------------------------------------------")
+            throw e
         }
     }
 }
