@@ -1,7 +1,8 @@
 {
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "lessc ./public/css/site.less ./public/css/site.css && vue-cli-service build"
+    "less": "lessc ./public/css/site.less ./public/css/site.css",
+    "serve": "npm run less && vue-cli-service serve",
+    "build": "npm run less && vue-cli-service build"
   },
   "dependencies": {
     "lodash": "^4.17.10",

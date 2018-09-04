@@ -17,7 +17,7 @@ data class ProjectFile(
 ) {
     val language: String = name.substringAfterLast(".")
     val githubUrl: String = "https://github.com/freewind-demos/${repo.name}/blob/master/$path"
-    val parentDirs: String = path.split("/").dropLast(1).joinToString("/")
+    val parentPath: String = if (path.contains("/")) path.substringBeforeLast("/") + "/" else ""
 }
 
 data class Repository(
