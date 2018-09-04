@@ -206,7 +206,7 @@ private fun relativePath(file: File, base: File): String {
 }
 
 fun inExcludedDirs(file: File): Boolean {
-    val excludeDirs = listOf(".git", ".gradle", "gradle", ".idea")
+    val excludeDirs = listOf(".git", ".gradle", "gradle", ".idea", "images")
     return excludeDirs.any { dir -> file.path.contains("/$dir/") }
 }
 
