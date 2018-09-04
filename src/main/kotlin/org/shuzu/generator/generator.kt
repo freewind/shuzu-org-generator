@@ -193,7 +193,9 @@ private fun readCodeFiles(repo: Repository): List<ProjectFile> {
 }
 
 fun isExcludeFiles(file: File): Boolean {
-    return listOf("package-lock.json", ".gitignore", "gradlew", "gradlew.bat").contains(file.name)
+    return listOf("package-lock.json",
+            ".gitignore", ".keep", ".gitkeep",
+            "gradlew", "gradlew.bat").contains(file.name)
 }
 
 private fun relativePath(file: File, base: File): String {
