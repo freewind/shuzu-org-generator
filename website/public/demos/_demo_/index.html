@@ -11,6 +11,15 @@
     <div class="site-slogan">{{ demo.name }}</div>
 </div>
 
+<div class="github center-in-page markdown-body">
+    <span class="repo-url">
+        <a href="{{ demo.githubUrl }}">打开Github项目地址</a>
+    </span>
+    <span class="repo-issues">
+        <a href="{{ demo.issuesUrl }}">有疑问上Github Issues上讨论</a>
+    </span>
+</div>
+
 {% if demo.readmeFile != null %}
 <div id="readme" class="center-in-page">
     <div class="markdown markdown-body">
@@ -40,7 +49,6 @@
 {% endfor %}
 
 <div class="github center-in-page markdown-body">
-    <span class="github-icon"><img src="../../images/github.jpg"></span>
     <span class="repo-url">
         <a href="{{ demo.githubUrl }}">打开Github项目地址</a>
     </span>
